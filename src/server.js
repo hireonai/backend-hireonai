@@ -1,8 +1,13 @@
-import Hapi from "@hapi/hapi";
+const Hapi = require("@hapi/hapi");
+const connectDB = require("./config/database.js");
+const env = require("./config/env.js");
+
 const init = async () => {
+  await connectDB();
+
   const server = Hapi.server({
-    port: 5000,
-    host: "localhost",
+    port: env.port,
+    host: env.nodeEnv === "production" ? "0.0.0.0" : "localhost",
     routes: {
       cors: {
         origin: ["*"],

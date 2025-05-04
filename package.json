@@ -1,6 +1,5 @@
 {
   "name": "backend-hireonai",
-  "type": "module",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -23,6 +22,8 @@
   "description": "",
   "dependencies": {
     "@hapi/hapi": "^21.4.0",
+    "dotenv": "^16.5.0",
+    "mongoose": "^8.14.1",
     "nodemon": "^3.1.10",
     "passport": "^0.7.0"
   }
