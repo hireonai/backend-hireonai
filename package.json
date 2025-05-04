@@ -1,0 +1,29 @@
+{
+  "name": "backend-hireonai",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hireonai/backend-hireonai.git"
+  },
+  "keywords": [
+    "backend"
+  ],
+  "author": "icarus",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hireonai/backend-hireonai/issues"
+  },
+  "homepage": "https://github.com/hireonai/backend-hireonai#readme",
+  "description": "",
+  "dependencies": {
+    "@hapi/hapi": "^21.4.0",
+    "nodemon": "^3.1.10",
+    "passport": "^0.7.0"
+  }
+}
