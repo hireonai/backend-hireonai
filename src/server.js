@@ -1,6 +1,8 @@
 const Hapi = require("@hapi/hapi");
-const connectDB = require("./config/database.js");
-const env = require("./config/env.js");
+const connectDB = require("./configs/database");
+const env = require("./configs/env");
+const routes = require("./routes");
+const passport = require("./auth/passport");
 
 const init = async () => {
   await connectDB();
@@ -14,6 +16,13 @@ const init = async () => {
       },
     },
   });
+
+  server.ext("onRequest", (request, h) => {
+    passport.initialize()(request.raw.req, request.raw.res, () => {});
+    return h.continue;
+  });
+
+  server.route(routes);
 
   await server.start();
   console.log(`Server running on ${server.info.uri}`);
