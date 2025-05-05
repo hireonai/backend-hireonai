@@ -1,4 +1,4 @@
-const { google } = require("../constants/oauthProviders");
+const { google } = require("../constants/oauthProviders.constant");
 
 require("dotenv").config();
 
@@ -11,4 +11,9 @@ module.exports = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN,
   googleClientId: process.env.GOOGLE_CLIENT_ID,
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  linkedinClientId: process.env.LINKEDIN_CLIENT_ID,
+  linkedinClientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+  facebookClientId: process.env.FACEBOOK_CLIENT_ID,
+  facebookClientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+  cookiePassword: process.env.COOKIE_PASSWORD,
 };

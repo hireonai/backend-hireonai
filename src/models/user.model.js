@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const roles = require("../constants/roles");
-const oauthProviders = require("../constants/oauthProviders");
+const roles = require("../constants/roles.constant");
+const oauthProviders = require("../constants/oauthProviders.constant");
 
-const usersSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -32,12 +32,12 @@ const usersSchema = new mongoose.Schema(
       enum: [roles.admin, roles.seeker],
       default: roles.admin,
     },
-    oauthProviders: {
+    oauthProvider: {
       type: String,
       enum: [
         oauthProviders.google,
         oauthProviders.linkedin,
-        oauthProviders.github,
+        oauthProviders.facebook,
         null,
       ],
       default: null,
@@ -52,15 +52,14 @@ const usersSchema = new mongoose.Schema(
   }
 );
 
-usersSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-usersSchema.methods.comparePassword = async function (candidatePassword) {
+userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-const Users = mongoose.model("Users", usersSchema);
-module.exports = Users;
+module.exports = mongoose.model("Users", userSchema);

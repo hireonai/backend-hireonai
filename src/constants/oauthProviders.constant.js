@@ -1,7 +1,7 @@
 const oauthProviders = {
   google: "google",
   linkedin: "linkedin",
-  github: "github",
+  facebook: "facebook",
 };
 
 module.exports = oauthProviders;

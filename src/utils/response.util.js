@@ -1,4 +1,4 @@
-const env = require("./configs/env");
+const env = require("./configs/env.config");
 
 class ResponseAPI {
   static success(res, data = null, message = "Success", statusCode = 200) {

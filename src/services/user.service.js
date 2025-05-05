@@ -1,5 +1,5 @@
-const Users = require("../models/Users");
-const Profiles = require("../models/Profiles");
+const Users = require("../models/user.model");
+const Profiles = require("../models/profile.model");
 
 async function findOrCreateUserOAuth({
   email,
@@ -13,15 +13,23 @@ async function findOrCreateUserOAuth({
     user = await Users.create({
       email,
       username: email.split("@")[0],
-      roles: "seeker",
+      role: "seeker",
       oauthProvider,
+      password: "krocoerikagajagongoding",
       verifiedAt: new Date(),
     });
 
     await Profiles.create({
       userId: user._id,
       fullname,
+      phone: null,
+      domicile: null,
+      lastEducation: null,
       photoUrl,
+      portfolioUrl: null,
+      cvUrl: null,
+      tagPreferences: [],
+      bookmarkJobs: [],
     });
   }
 
