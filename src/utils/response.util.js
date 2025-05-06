@@ -2,19 +2,23 @@ const env = require("./configs/env.config");
 
 class ResponseAPI {
   static success(res, data = null, message = "Success", statusCode = 200) {
-    return res.status(statusCode).json({
-      success: true,
-      message,
-      data,
-    });
+    return res
+      .response({
+        success: true,
+        message,
+        data,
+      })
+      .code(statusCode);
   }
 
   static error(res, message = "Error", statusCode = 400, errors = null) {
-    return res.status(statusCode).json({
-      success: false,
-      message,
-      errors,
-    });
+    return res
+      .response({
+        success: false,
+        message,
+        errors,
+      })
+      .code(statusCode);
   }
 
   static unauthorized(res, message = "Unauthorized") {
