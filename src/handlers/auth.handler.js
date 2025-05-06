@@ -15,8 +15,6 @@ const googleLogin = async (request, h) => {
 
   const profile = request.auth.credentials.profile;
 
-  // return h.response({ profile }).code(200);
-
   try {
     const account = await findOrCreateUserOAuth({
       email: profile.email,
@@ -35,24 +33,22 @@ const googleLogin = async (request, h) => {
 };
 const linkedinLogin = async (request, h) => {
   if (!request.auth.isAuthenticated) {
-    return `Authentication failed: ${request.auth.error}`;
+    return `Authentication failed: ${request.auth.error.message}`;
   }
 
   const profile = request.auth.credentials.profile;
 
-  return h.response({ profile }).code(200);
-
   try {
     const account = await findOrCreateUserOAuth({
-      email: profile.emails[0].value,
+      email: profile.email,
       fullname: profile.displayName,
-      photoUrl: profile.photos[0].value,
+      photoUrl: profile.photo || null,
       oauthProvider: "linkedin",
     });
 
     request.cookieAuth.set({ user: account });
 
-    return h.response(`Login berhasil, selamat datang ${account.fullname}`);
+    return h.response(`Login berhasil, selamat datang ${account.username}`);
   } catch (err) {
     console.error("Login error:", err);
     return h.response("Terjadi kesalahan saat login").code(500);

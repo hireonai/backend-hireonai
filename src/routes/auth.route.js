@@ -17,7 +17,7 @@ module.exports = [
     method: "GET",
     path: "/auth/linkedin",
     options: {
-      auth: false,
+      auth: "linkedin",
       handler: linkedinLogin,
     },
   },

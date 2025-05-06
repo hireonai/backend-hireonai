@@ -4,6 +4,44 @@ const routes = require("./routes");
 const Bell = require("bell");
 const Cookie = require("@hapi/cookie");
 const connectDB = require("./configs/database.config");
+const axios = require("axios");
+
+const customLinkedInOIDC = {
+  name: "linkedin",
+  protocol: "oauth2",
+  useParamsAuth: true,
+  auth: "https://www.linkedin.com/oauth/v2/authorization",
+  token: "https://www.linkedin.com/oauth/v2/accessToken",
+  scope: ["openid", "profile", "email"],
+  profile: async function (credentials, params) {
+    const { access_token } = params;
+    console.log("LinkedIn params:", params);
+    if (!params || !params.access_token) {
+      throw new Error("Missing access token in params");
+    }
+
+    const { data: profile } = await axios.get(
+      "https://api.linkedin.com/v2/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    console.log("LinkedIn profile data:", profile);
+
+    credentials.profile = {
+      id: profile.sub,
+      email: profile.email,
+      displayName: `${profile.given_name || ""} ${
+        profile.family_name || ""
+      }`.trim(),
+      photo: profile.picture || null,
+      raw: profile,
+    };
+  },
+};
+
 const init = async () => {
   await connectDB();
 
@@ -38,12 +76,11 @@ const init = async () => {
   });
 
   server.auth.strategy("linkedin", "bell", {
-    provider: "linkedin",
+    provider: customLinkedInOIDC,
     password: env.cookiePassword,
     clientId: env.linkedinClientId,
     clientSecret: env.linkedinClientSecret,
     isSecure: false,
-    scope: ["r_liteprofile", "r_emailaddress"],
   });
 
   server.auth.strategy("facebook", "bell", {
