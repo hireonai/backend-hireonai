@@ -61,14 +61,12 @@ const facebookLogin = async (request, h) => {
 
   const profile = request.auth.credentials.profile;
 
-  return h.response({ profile }).code(200);
-
   try {
     const account = await findOrCreateUserOAuth({
-      email: profile.emails[0].value,
+      email: profile.email,
       fullname: profile.displayName,
-      photoUrl: profile.photos[0].value,
-      oauthProvider: "linkedin",
+      photoUrl: profile.picture.data.url,
+      oauthProvider: "facebook",
     });
 
     request.cookieAuth.set({ user: account });

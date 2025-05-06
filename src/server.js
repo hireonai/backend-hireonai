@@ -89,7 +89,7 @@ const init = async () => {
     clientId: env.facebookClientId,
     clientSecret: env.facebookClientSecret,
     isSecure: false,
-    scope: ["email"],
+    scope: ["email", "public_profile"],
   });
 
   server.route(routes);

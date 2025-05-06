@@ -25,7 +25,7 @@ module.exports = [
     method: "GET",
     path: "/auth/facebook",
     options: {
-      auth: false,
+      auth: "facebook",
       handler: facebookLogin,
     },
   },
