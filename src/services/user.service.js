@@ -15,7 +15,7 @@ async function findOrCreateUserOAuth({
       username: email.split("@")[0],
       role: "seeker",
       oauthProvider,
-      password: "krocoerikagajagongoding",
+      password: "erikajagongodingkroconyangga",
       verifiedAt: new Date(),
     });
 
@@ -31,6 +31,14 @@ async function findOrCreateUserOAuth({
       tagPreferences: [],
       bookmarkJobs: [],
     });
+  } else {
+    if (user.oauthProvider !== oauthProvider) {
+      const error = new Error(
+        `Email ini sudah terdaftar menggunakan provider ${user.oauthProvider}. Silakan login dengan provider tersebut.`
+      );
+      error.statusCode = 403;
+      throw error;
+    }
   }
 
   return user;

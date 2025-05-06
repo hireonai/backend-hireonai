@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const env = require("../configs/env.config");
+const { URL } = require("url");
 const { findOrCreateUserOAuth } = require("../services/user.service");
 
 function generateToken(user) {
@@ -10,7 +11,11 @@ function generateToken(user) {
 
 const googleLogin = async (request, h) => {
   if (!request.auth.isAuthenticated) {
-    return `Authentication failed: ${request.auth.error.message}`;
+    return h.redirect(
+      `${env.frontendUrl}/login?error=${encodeURIComponent(
+        "Autentikasi gagal"
+      )}`
+    );
   }
 
   const profile = request.auth.credentials.profile;
@@ -19,21 +24,39 @@ const googleLogin = async (request, h) => {
     const account = await findOrCreateUserOAuth({
       email: profile.email,
       fullname: profile.displayName,
-      photoUrl: profile.raw.picture,
+      photoUrl:
+        profile.raw.picture !== null && profile.raw.picture !== undefined
+          ? profile.raw.picture
+          : null,
       oauthProvider: "google",
     });
 
-    request.cookieAuth.set({ user: account });
+    const token = generateToken(account);
 
-    return h.response(`Login berhasil, selamat datang ${account.username}`);
+    const redirectUrl = new URL(`${env.frontendUrl}/oauth/callback`);
+    redirectUrl.searchParams.set("token", token);
+
+    return h.redirect(redirectUrl.toString());
   } catch (err) {
     console.error("Login error:", err);
-    return h.response("Terjadi kesalahan saat login").code(500);
+
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "error",
+      encodeURIComponent(err.message || "Login error")
+    );
+
+    return h.redirect(redirectUrl.toString());
   }
 };
+
 const linkedinLogin = async (request, h) => {
   if (!request.auth.isAuthenticated) {
-    return `Authentication failed: ${request.auth.error.message}`;
+    return h.redirect(
+      `${env.frontendUrl}/login?error=${encodeURIComponent(
+        "Autentikasi gagal"
+      )}`
+    );
   }
 
   const profile = request.auth.credentials.profile;
@@ -46,17 +69,31 @@ const linkedinLogin = async (request, h) => {
       oauthProvider: "linkedin",
     });
 
-    request.cookieAuth.set({ user: account });
+    const token = generateToken(account);
 
-    return h.response(`Login berhasil, selamat datang ${account.username}`);
+    const redirectUrl = new URL(`${env.frontendUrl}/oauth/callback`);
+    redirectUrl.searchParams.set("token", token);
+
+    return h.redirect(redirectUrl.toString());
   } catch (err) {
     console.error("Login error:", err);
-    return h.response("Terjadi kesalahan saat login").code(500);
+
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "error",
+      encodeURIComponent(err.message || "Login error")
+    );
+
+    return h.redirect(redirectUrl.toString());
   }
 };
 const facebookLogin = async (request, h) => {
   if (!request.auth.isAuthenticated) {
-    return `Authentication failed: ${request.auth.error}`;
+    return h.redirect(
+      `${env.frontendUrl}/login?error=${encodeURIComponent(
+        "Autentikasi gagal"
+      )}`
+    );
   }
 
   const profile = request.auth.credentials.profile;
@@ -65,16 +102,29 @@ const facebookLogin = async (request, h) => {
     const account = await findOrCreateUserOAuth({
       email: profile.email,
       fullname: profile.displayName,
-      photoUrl: profile.picture.data.url,
+      photoUrl:
+        profile.picture !== null && profile.picture !== undefined
+          ? profile.picture.data.url
+          : null,
       oauthProvider: "facebook",
     });
 
-    request.cookieAuth.set({ user: account });
+    const token = generateToken(account);
 
-    return h.response(`Login berhasil, selamat datang ${account.fullname}`);
+    const redirectUrl = new URL(`${env.frontendUrl}/oauth/callback`);
+    redirectUrl.searchParams.set("token", token);
+
+    return h.redirect(redirectUrl.toString());
   } catch (err) {
     console.error("Login error:", err);
-    return h.response("Terjadi kesalahan saat login").code(500);
+
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "error",
+      encodeURIComponent(err.message || "Login error")
+    );
+
+    return h.redirect(redirectUrl.toString());
   }
 };
 
