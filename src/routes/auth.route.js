@@ -10,6 +10,8 @@ module.exports = [
     path: "/auth/google",
     options: {
       auth: "google",
+      tags: ["api", "auth"],
+      description: "Login menggunakan Google OAuth",
       handler: googleLogin,
     },
   },
@@ -18,6 +20,8 @@ module.exports = [
     path: "/auth/linkedin",
     options: {
       auth: "linkedin",
+      tags: ["api", "auth"],
+      description: "Login menggunakan LinkedIn OAuth",
       handler: linkedinLogin,
     },
   },
@@ -26,6 +30,8 @@ module.exports = [
     path: "/auth/facebook",
     options: {
       auth: "facebook",
+      tags: ["api", "auth"],
+      description: "Login menggunakan Facebook OAuth",
       handler: facebookLogin,
     },
   },

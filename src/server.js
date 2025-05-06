@@ -5,6 +5,7 @@ const Bell = require("bell");
 const Cookie = require("@hapi/cookie");
 const connectDB = require("./configs/database.config");
 const axios = require("axios");
+const registerSwagger = require("./configs/swagger.config");
 
 const customLinkedInOIDC = {
   name: "linkedin",
@@ -15,7 +16,6 @@ const customLinkedInOIDC = {
   scope: ["openid", "profile", "email"],
   profile: async function (credentials, params) {
     const { access_token } = params;
-    console.log("LinkedIn params:", params);
     if (!params || !params.access_token) {
       throw new Error("Missing access token in params");
     }
@@ -28,7 +28,6 @@ const customLinkedInOIDC = {
         },
       }
     );
-    console.log("LinkedIn profile data:", profile);
 
     credentials.profile = {
       id: profile.sub,
@@ -56,6 +55,7 @@ const init = async () => {
   });
 
   await server.register([Bell, Cookie]);
+  await registerSwagger(server);
 
   server.auth.strategy("session", "cookie", {
     cookie: {
@@ -96,6 +96,7 @@ const init = async () => {
 
   await server.start();
   console.log(`Server running on ${server.info.uri}`);
+  console.log(`Documentation running on ${server.info.uri}/docs`);
 };
 
 init();
