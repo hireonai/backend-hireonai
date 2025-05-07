@@ -1,7 +1,7 @@
 const {
-  googleLogin,
-  linkedinLogin,
-  facebookLogin,
+  googleOauth,
+  linkedinOauth,
+  facebookOauth,
 } = require("../handlers/auth.handler");
 
 module.exports = [
@@ -12,7 +12,7 @@ module.exports = [
       auth: "google",
       tags: ["api", "auth"],
       description: "Login menggunakan Google OAuth",
-      handler: googleLogin,
+      handler: googleOauth,
     },
   },
   {
@@ -22,7 +22,7 @@ module.exports = [
       auth: "linkedin",
       tags: ["api", "auth"],
       description: "Login menggunakan LinkedIn OAuth",
-      handler: linkedinLogin,
+      handler: linkedinOauth,
     },
   },
   {
@@ -32,7 +32,7 @@ module.exports = [
       auth: "facebook",
       tags: ["api", "auth"],
       description: "Login menggunakan Facebook OAuth",
-      handler: facebookLogin,
+      handler: facebookOauth,
     },
   },
 ];

@@ -34,7 +34,7 @@ async function findOrCreateUserOAuth({
   } else {
     if (user.oauthProvider !== oauthProvider) {
       const error = new Error(
-        `Email ini sudah terdaftar menggunakan provider ${user.oauthProvider}. Silakan login dengan provider tersebut.`
+        `This email is already registered using the ${user.oauthProvider} provider. Please log in with that provider.`
       );
       error.statusCode = 403;
       throw error;
