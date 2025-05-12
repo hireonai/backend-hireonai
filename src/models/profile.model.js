@@ -11,40 +11,47 @@ const profileSchema = new Schema(
     fullname: {
       type: String,
       trim: true,
+      required: true,
     },
     phone: {
       type: String,
       trim: true,
+      required: true,
     },
     domicile: {
       type: String,
       trim: true,
+      default: null,
     },
     lastEducation: {
       type: String,
       trim: true,
+      default: null,
     },
     photoUrl: {
       type: String,
       trim: true,
+      default: null,
     },
     portfolioUrl: {
       type: String,
       trim: true,
+      default: null,
     },
     cvUrl: {
       type: String,
       trim: true,
+      default: null,
     },
     tagPreferences: {
       type: Array,
+      default: [],
     },
-    bookmarkJobs: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Jobs",
-      },
-    ],
+    bookmarkJobs: {
+      type: [Schema.Types.ObjectId],
+      ref: "Jobs",
+      default: [],
+    },
   },
   {
     timestamps: true,

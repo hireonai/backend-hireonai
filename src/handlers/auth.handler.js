@@ -1,14 +1,14 @@
-const jwt = require("jsonwebtoken");
-const env = require("../configs/env.config");
 const { URL } = require("url");
-const { findOrCreateUserOAuth } = require("../services/user.service");
+const {
+  findOrCreateUserOAuth,
+  registerUser,
+  activateUser,
+  loginUser,
+  forgotPasswordUser,
+  resetPasswordUser,
+} = require("../services/user.service");
 const ResponseAPI = require("../utils/response.util");
-
-function generateToken(user) {
-  return jwt.sign({ userId: user._id, role: user.roles }, env.jwtSecret, {
-    expiresIn: env.jwtExpiresIn,
-  });
-}
+const { generateToken } = require("../utils/token.util");
 
 const googleOauth = async (request, h) => {
   if (!request.auth.isAuthenticated) {
@@ -65,12 +65,10 @@ const googleOauth = async (request, h) => {
 
     // return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(
-      h,
-      err.message || "Login error with Google",
-      400,
-      err.errors || null
-    );
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    return ResponseAPI.serverError(h, err);
   }
 };
 
@@ -123,12 +121,10 @@ const linkedinOauth = async (request, h) => {
 
     // return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(
-      h,
-      err.message || "Login error with LinkedIn",
-      400,
-      err.errors || null
-    );
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    return ResponseAPI.serverError(h, err);
   }
 };
 const facebookOauth = async (request, h) => {
@@ -185,12 +181,156 @@ const facebookOauth = async (request, h) => {
     // );
     // return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    return ResponseAPI.serverError(h, err);
+  }
+};
+
+const register = async (request, h) => {
+  try {
+    const { email, username, password, fullname, phone } = request.payload;
+
+    const { user, profile } = await registerUser({
+      fullname,
+      username,
+      email,
+      phone,
+      password,
+    });
+
+    const data = {
+      _id: user._id,
+      email: user.email,
+      username: user.username,
+      fullname: profile.fullname,
+      phone: profile.phone,
+    };
+
+    return ResponseAPI.success(
       h,
-      err.message || "Login error with Facebook",
-      400,
-      err.errors || null
+      data,
+      "Account created. Please verify via email."
     );
+  } catch (err) {
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+
+    return ResponseAPI.serverError(h, err);
+  }
+};
+const activate = async (request, h) => {
+  try {
+    const { token } = request.params;
+
+    let user = await activateUser({ token });
+
+    user = user.toObject();
+    delete user.password;
+    delete user.oauthProvider;
+    delete user.role;
+
+    return ResponseAPI.success(h, user, "Account verified successfully.");
+  } catch (err) {
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    if (err.statusCode === 404) {
+      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
+    }
+
+    return ResponseAPI.serverError(h, err);
+  }
+};
+
+const login = async (request, h) => {
+  try {
+    const { email, password } = request.payload;
+
+    let user = await loginUser({ email, password });
+    user = user.toObject();
+    delete user.password;
+    delete user.oauthProvider;
+    delete user.role;
+
+    const token = generateToken(user);
+
+    return ResponseAPI.success(h, { token, user: user }, "Login successful.");
+  } catch (err) {
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    if (err.statusCode === 401) {
+      return ResponseAPI.unauthorized(
+        h,
+        err.message,
+        err.statusCode,
+        err.errors
+      );
+    }
+    if (err.statusCode === 403) {
+      return ResponseAPI.forbidden(h, err.message, err.statusCode, err.errors);
+    }
+    return ResponseAPI.serverError(h, err);
+  }
+};
+
+const forgotPassword = async (request, h) => {
+  try {
+    const { email } = request.payload;
+
+    await forgotPasswordUser({ email });
+
+    return ResponseAPI.success(h, null, "Password reset link sent to email.");
+  } catch (err) {
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    if (err.statusCode === 404) {
+      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
+    }
+    return ResponseAPI.serverError(h, err);
+  }
+};
+
+const resetPassword = async (request, h) => {
+  try {
+    const { token, newPassword } = request.payload;
+
+    await resetPasswordUser({ token, newPassword });
+
+    return ResponseAPI.success(h, null, "Password reset successful.");
+  } catch (err) {
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    if (err.statusCode === 404) {
+      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
+    }
+    return ResponseAPI.serverError(h, err);
+  }
+};
+
+const sendActivationEmail = async (request, h) => {
+  try {
+    const { email } = request.payload;
+
+    await sendActivationEmailUser({ email });
+    return ResponseAPI.success(
+      h,
+      null,
+      "Activation email sent. Please check your inbox."
+    );
+  } catch (err) {
+    if (err.statusCode !== 500) {
+      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
+    }
+    if (err.statusCode === 404) {
+      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
+    }
+    return ResponseAPI.serverError(h, err);
   }
 };
 
@@ -198,4 +338,10 @@ module.exports = {
   googleOauth,
   linkedinOauth,
   facebookOauth,
+  register,
+  activate,
+  login,
+  forgotPassword,
+  resetPassword,
+  sendActivationEmail,
 };

@@ -34,7 +34,6 @@ class ResponseAPI {
   }
 
   static serverError(h, error) {
-    console.error(error);
     return this.error(
       h,
       "Internal Server Error",

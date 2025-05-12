@@ -1,8 +1,7 @@
-const { google } = require("../constants/oauthProviders.constant");
-
 require("dotenv").config();
 
 module.exports = {
+  appName: process.env.APP_NAME,
   port: process.env.PORT,
   nodeEnv: process.env.NODE_ENV,
   frontendUrl: process.env.FRONTEND_URL,
@@ -16,4 +15,6 @@ module.exports = {
   facebookClientId: process.env.FACEBOOK_CLIENT_ID,
   facebookClientSecret: process.env.FACEBOOK_CLIENT_SECRET,
   cookiePassword: process.env.COOKIE_PASSWORD,
+  smptUser: process.env.SMTP_USER,
+  smptPass: process.env.SMTP_PASS,
 };
