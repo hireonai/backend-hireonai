@@ -170,8 +170,8 @@ const activateUser = async ({ token }) => {
   }
 };
 
-const loginUser = async ({ email, password }) => {
-  if (!email) throw new CustomError("Email is required.", 400);
+const loginUser = async ({ username, password }) => {
+  if (!username) throw new CustomError("Email/Username is required.", 400);
   if (!password) throw new CustomError("Password is required.", 400);
   try {
     const user = await User.findOne({

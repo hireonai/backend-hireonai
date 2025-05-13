@@ -247,9 +247,9 @@ const activate = async (request, h) => {
 
 const login = async (request, h) => {
   try {
-    const { email, password } = request.payload;
+    const { username, password } = request.payload;
 
-    let user = await loginUser({ email, password });
+    let user = await loginUser({ usename, password });
     user = user.toObject();
     delete user.password;
     delete user.oauthProvider;
