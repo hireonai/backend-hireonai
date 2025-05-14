@@ -17,7 +17,7 @@ class ResponseAPI {
         success: false,
         message:
           env.nodeEnv !== "development" && statusCode === 500 ? null : message,
-        errors:
+        error:
           statusCode === 401
             ? "Unauthorized"
             : statusCode === 403
