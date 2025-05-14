@@ -18,7 +18,7 @@ module.exports = [
     options: {
       auth: "google",
       tags: ["api", "auth"],
-      description: "Login menggunakan Google OAuth",
+      description: "Login with Google OAuth",
       handler: googleOauth,
     },
   },
@@ -28,7 +28,7 @@ module.exports = [
     options: {
       auth: "linkedin",
       tags: ["api", "auth"],
-      description: "Login menggunakan LinkedIn OAuth",
+      description: "Login with LinkedIn OAuth",
       handler: linkedinOauth,
     },
   },
@@ -38,7 +38,7 @@ module.exports = [
     options: {
       auth: "facebook",
       tags: ["api", "auth"],
-      description: "Login menggunakan Facebook OAuth",
+      description: "Login with Facebook OAuth",
       handler: facebookOauth,
     },
   },
@@ -48,7 +48,7 @@ module.exports = [
     options: {
       auth: false,
       tags: ["api", "auth"],
-      description: "Register user",
+      description: "Register a new user",
       validate: {
         payload: Joi.object({
           email: Joi.string().email().required(),
@@ -67,7 +67,12 @@ module.exports = [
     options: {
       auth: false,
       tags: ["api", "auth"],
-      description: "Activate user",
+      description: "Activate user account",
+      validate: {
+        params: Joi.object({
+          token: Joi.string().required(),
+        }),
+      },
       handler: activate,
     },
   },
@@ -93,7 +98,7 @@ module.exports = [
     options: {
       auth: false,
       tags: ["api", "auth"],
-      description: "Forgot password",
+      description: "Request password reset",
       validate: {
         payload: Joi.object({
           email: Joi.string().email().required(),
@@ -108,7 +113,7 @@ module.exports = [
     options: {
       auth: false,
       tags: ["api", "auth"],
-      description: "Reset password",
+      description: "Reset user password",
       validate: {
         payload: Joi.object({
           token: Joi.string().required(),
