@@ -68,7 +68,7 @@ const findOrCreateUserOAuth = async ({
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError("Internal Server Error", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 
@@ -89,7 +89,7 @@ const sendingActivationEmail = async ({ email, token }) => {
       html: emailContent,
     });
   } catch (error) {
-    throw new CustomError("Failed to send email.", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 
@@ -136,7 +136,7 @@ const registerUser = async ({ fullname, username, email, phone, password }) => {
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError("Internal Server Error", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 
@@ -166,7 +166,7 @@ const activateUser = async ({ token }) => {
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError("Internal Server Error", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 
@@ -175,7 +175,7 @@ const loginUser = async ({ username, password }) => {
   if (!password) throw new CustomError("Password is required.", 400);
   try {
     const user = await User.findOne({
-      $or: [{ email }, { username: email }],
+      $or: [{ email: username }, { username }],
     });
     if (!user || !(await user.comparePassword(password)))
       throw new CustomError("Invalid email/username or password.", 401);
@@ -186,7 +186,7 @@ const loginUser = async ({ username, password }) => {
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError("Internal Server Error", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 
@@ -211,13 +211,13 @@ const forgotPasswordUser = async ({ email }) => {
         html: emailContent,
       });
     } catch (error) {
-      throw new CustomError("Failed to send email.", 500);
+      throw new CustomError(error.message, 500);
     }
   } catch (error) {
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError("Internal Server Error", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 
@@ -244,7 +244,7 @@ const resetPasswordUser = async ({ token, newPassword }) => {
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError("Internal Server Error", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 
@@ -261,7 +261,7 @@ const sendActivationEmailUser = async ({ email }) => {
     if (error instanceof CustomError) {
       throw error;
     }
-    throw new CustomError("Internal Server Error", 500);
+    throw new CustomError(error.message, 500);
   }
 };
 

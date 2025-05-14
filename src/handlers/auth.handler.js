@@ -65,10 +65,7 @@ const googleOauth = async (request, h) => {
 
     // return h.redirect(redirectUrl.toString());
 
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 
@@ -121,10 +118,7 @@ const linkedinOauth = async (request, h) => {
 
     // return h.redirect(redirectUrl.toString());
 
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 const facebookOauth = async (request, h) => {
@@ -181,10 +175,7 @@ const facebookOauth = async (request, h) => {
     // );
     // return h.redirect(redirectUrl.toString());
 
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 
@@ -214,11 +205,7 @@ const register = async (request, h) => {
       "Account created. Please verify via email."
     );
   } catch (err) {
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 const activate = async (request, h) => {
@@ -234,14 +221,7 @@ const activate = async (request, h) => {
 
     return ResponseAPI.success(h, user, "Account verified successfully.");
   } catch (err) {
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    if (err.statusCode === 404) {
-      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
-    }
-
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 
@@ -259,21 +239,7 @@ const login = async (request, h) => {
 
     return ResponseAPI.success(h, { token, user: user }, "Login successful.");
   } catch (err) {
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    if (err.statusCode === 401) {
-      return ResponseAPI.unauthorized(
-        h,
-        err.message,
-        err.statusCode,
-        err.errors
-      );
-    }
-    if (err.statusCode === 403) {
-      return ResponseAPI.forbidden(h, err.message, err.statusCode, err.errors);
-    }
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 
@@ -285,13 +251,7 @@ const forgotPassword = async (request, h) => {
 
     return ResponseAPI.success(h, null, "Password reset link sent to email.");
   } catch (err) {
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    if (err.statusCode === 404) {
-      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
-    }
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 
@@ -303,13 +263,7 @@ const resetPassword = async (request, h) => {
 
     return ResponseAPI.success(h, null, "Password reset successful.");
   } catch (err) {
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    if (err.statusCode === 404) {
-      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
-    }
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 
@@ -324,13 +278,7 @@ const sendActivationEmail = async (request, h) => {
       "Activation email sent. Please check your inbox."
     );
   } catch (err) {
-    if (err.statusCode !== 500) {
-      return ResponseAPI.error(h, err.message, err.statusCode, err.errors);
-    }
-    if (err.statusCode === 404) {
-      return ResponseAPI.notFound(h, err.message, err.statusCode, err.errors);
-    }
-    return ResponseAPI.serverError(h, err);
+    return ResponseAPI.error(h, err.message, err.statusCode);
   }
 };
 

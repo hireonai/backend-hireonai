@@ -80,7 +80,7 @@ module.exports = [
       description: "Login user",
       validate: {
         payload: Joi.object({
-          email: Joi.string().email().required(),
+          username: Joi.string().min(3).max(30).required(),
           password: Joi.string().min(8).required(),
         }),
       },

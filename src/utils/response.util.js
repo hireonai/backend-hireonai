@@ -11,36 +11,46 @@ class ResponseAPI {
       .code(statusCode);
   }
 
-  static error(h, message = "Error", statusCode = 400, errors = null) {
+  static error(h, message, statusCode) {
     return h
       .response({
         success: false,
-        message,
-        errors,
+        message:
+          env.nodeEnv !== "development" && statusCode === 500 ? null : message,
+        errors:
+          statusCode === 401
+            ? "Unauthorized"
+            : statusCode === 403
+            ? "Forbidden"
+            : statusCode === 404
+            ? "Not Found"
+            : statusCode === 500
+            ? "Internal Server Error"
+            : "Error",
       })
       .code(statusCode);
   }
 
-  static unauthorized(h, message = "Unauthorized") {
-    return this.error(h, message, 401);
-  }
+  // static unauthorized(h, message = null) {
+  //   return this.error(h, message, 401, "Unauthorized");
+  // }
 
-  static forbidden(h, message = "Forbidden") {
-    return this.error(h, message, 403);
-  }
+  // static forbidden(h, message = null) {
+  //   return this.error(h, message, 403, "Forbidden");
+  // }
 
-  static notFound(h, message = "Not Found") {
-    return this.error(h, message, 404);
-  }
+  // static notFound(h, message = null) {
+  //   return this.error(h, message, 404, "Not Found");
+  // }
 
-  static serverError(h, error) {
-    return this.error(
-      h,
-      "Internal Server Error",
-      500,
-      env.nodeEnv === "development" ? error.message : null
-    );
-  }
+  // static serverError(h, message = null) {
+  //   return this.error(
+  //     h,
+  //     env.nodeEnv === "development" ? message : null,
+  //     500,
+  //     "Internal Server Error"
+  //   );
+  // }
 }
 
 module.exports = ResponseAPI;
