@@ -249,7 +249,7 @@ const login = async (request, h) => {
   try {
     const { username, password } = request.payload;
 
-    let user = await loginUser({ usename, password });
+    let user = await loginUser({ username, password });
     user = user.toObject();
     delete user.password;
     delete user.oauthProvider;
