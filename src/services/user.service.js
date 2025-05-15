@@ -198,7 +198,7 @@ const forgotPasswordUser = async ({ email }) => {
     const token = generateToken(user, "1h");
     const resetLink = `${env.frontendUrl}/reset-password/${token}`;
     const emailContent = `
-      <h1>Reset Your Password</h1>
+      <h1>Password Reset</h1>
       <p>To reset your password, please click the link below:</p>
       <p><a href="${resetLink}">Reset my password</a></p>
       <p>If you did not request a password reset, please ignore this email.</p>
@@ -207,7 +207,7 @@ const forgotPasswordUser = async ({ email }) => {
     try {
       await sendEmail({
         to: email,
-        subject: "Reset Your Password",
+        subject: "Reset Your Account Password",
         html: emailContent,
       });
     } catch (error) {
