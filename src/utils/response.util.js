@@ -4,6 +4,7 @@ class ResponseAPI {
   static success(h, data = null, message = "Success", statusCode = 200) {
     return h
       .response({
+        statusCode,
         success: true,
         message,
         data,
@@ -14,6 +15,7 @@ class ResponseAPI {
   static error(h, message, statusCode) {
     return h
       .response({
+        statusCode,
         success: false,
         message:
           env.nodeEnv !== "development" && statusCode === 500 ? null : message,
