@@ -6,6 +6,7 @@ const {
   loginUser,
   forgotPasswordUser,
   resetPasswordUser,
+  sendActivationEmailUser,
 } = require("../services/user.service");
 const ResponseAPI = require("../utils/response.util");
 const { generateToken } = require("../utils/token.util");
