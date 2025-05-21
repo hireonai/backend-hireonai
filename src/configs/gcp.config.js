@@ -1,15 +1,15 @@
 const { Storage } = require("@google-cloud/storage");
 const path = require("path");
+const env = require("../configs/env.config");
 
-// Ganti dengan file credentials dari GCP
-const serviceKeyPath = path.join(__dirname, "../keys/gcs-service-account.json");
+const serviceKeyPath = path.join(__dirname, env.gcpPathSecret);
 
 const storage = new Storage({
   keyFilename: serviceKeyPath,
-  projectId: "cariin-capstone", // sesuaikan
+  projectId: env.gcpProjectId,
 });
 
-const bucketName = "main-storage-hireon";
+const bucketName = env.gcpBucketName;
 const bucket = storage.bucket(bucketName);
 
 module.exports = { storage, bucket };

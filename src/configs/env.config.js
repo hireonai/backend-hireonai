@@ -17,4 +17,7 @@ module.exports = {
   cookiePassword: process.env.COOKIE_PASSWORD,
   smptUser: process.env.SMTP_USER,
   smptPass: process.env.SMTP_PASS,
+  gcpPathSecret: process.env.GCP_PATH_SECRET,
+  gcpProjectId: process.env.GCP_PROJECT_ID,
+  gcpBucketName: process.env.GCP_BUCKET_NAME,
 };
