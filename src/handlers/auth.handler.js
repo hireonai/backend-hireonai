@@ -66,7 +66,7 @@ const googleOauth = async (request, h) => {
 
     // return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
@@ -119,7 +119,7 @@ const linkedinOauth = async (request, h) => {
 
     // return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 const facebookOauth = async (request, h) => {
@@ -176,7 +176,7 @@ const facebookOauth = async (request, h) => {
     // );
     // return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
@@ -206,7 +206,7 @@ const register = async (request, h) => {
       "Account created. Please verify via email."
     );
   } catch (err) {
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 const activate = async (request, h) => {
@@ -222,7 +222,7 @@ const activate = async (request, h) => {
 
     return ResponseAPI.success(h, user, "Account verified successfully.");
   } catch (err) {
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
@@ -240,7 +240,7 @@ const login = async (request, h) => {
 
     return ResponseAPI.success(h, { token, user: user }, "Login successful.");
   } catch (err) {
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
@@ -252,7 +252,7 @@ const forgotPassword = async (request, h) => {
 
     return ResponseAPI.success(h, null, "Password reset link sent to email.");
   } catch (err) {
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
@@ -264,7 +264,7 @@ const resetPassword = async (request, h) => {
 
     return ResponseAPI.success(h, null, "Password reset successful.");
   } catch (err) {
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
@@ -279,7 +279,7 @@ const sendActivationEmail = async (request, h) => {
       "Activation email sent. Please check your inbox."
     );
   } catch (err) {
-    return ResponseAPI.error(h, err.message, err.statusCode);
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 

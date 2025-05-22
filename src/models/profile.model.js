@@ -16,7 +16,7 @@ const profileSchema = new Schema(
     phone: {
       type: String,
       trim: true,
-      required: true,
+      default: null,
     },
     domicile: {
       type: String,

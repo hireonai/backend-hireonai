@@ -6,6 +6,8 @@ const CustomError = require("../utils/error.util");
 const User = require("../models/user.model");
 const Profile = require("../models/profile.model");
 const roles = require("../constants/roles.constant");
+const { uploadToGCS } = require("../utils/gcp.util");
+const downloadImageUrl = require("../utils/downloadImageUrl.util");
 
 const findOrCreateUserOAuth = async ({
   email,
@@ -28,23 +30,42 @@ const findOrCreateUserOAuth = async ({
 
     if (!user) {
       user = await User.create(
-        {
-          email,
-          username: email.split("@")[0],
-          role: roles.seeker,
-          oauthProvider,
-          password: "erikajagongodingkroconyangga",
-          verifiedAt: new Date(),
-        },
+        [
+          {
+            email,
+            username: email.split("@")[0],
+            role: roles.seeker,
+            oauthProvider,
+            password: "hireonai",
+            verifiedAt: new Date(),
+          },
+        ],
         { session }
       );
 
+      let uploadedPhotoUrl = null;
+
+      if (photoUrl) {
+        try {
+          const { buffer, contentType } = await downloadImageUrl(photoUrl);
+
+          const ext = contentType.split("/")[1];
+          const path = `photos/${user[0]._id}-${Date.now()}.${ext}`;
+
+          uploadedPhotoUrl = await uploadToGCS(buffer, path, contentType);
+        } catch (err) {
+          throw new CustomError(err.message, 500);
+        }
+      }
+
       await Profile.create(
-        {
-          userId: user._id,
-          fullname,
-          photoUrl,
-        },
+        [
+          {
+            userId: user[0]._id,
+            fullname,
+            photoUrl: uploadedPhotoUrl,
+          },
+        ],
         { session }
       );
 
@@ -54,10 +75,10 @@ const findOrCreateUserOAuth = async ({
       return user;
     } else {
       if (user.oauthProvider !== oauthProvider) {
-        await session.abortTransaction();
-        session.endSession();
         throw new CustomError(
-          `Email already registered using the ${user.oauthProvider} provider.`,
+          user.oauthProvider === null
+            ? "Email already registered."
+            : `Email already registered using the ${user.oauthProvider} provider.`,
           409
         );
       }

@@ -13,10 +13,8 @@ const uploadToGCS = async (fileBuffer, destinationPath, contentType) => {
     stream.on("error", (err) => reject(err));
 
     stream.on("finish", async () => {
-      // Make file public (opsional)
       await file.makePublic();
 
-      // Public URL
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
       resolve(publicUrl);
     });
@@ -32,7 +30,7 @@ const deleteFromGCS = async (fileUrl) => {
   try {
     await file.delete();
   } catch (err) {
-    console.warn("GCS deletion failed:", err.message);
+    throw err;
   }
 };
 
