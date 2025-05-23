@@ -11,14 +11,10 @@ const jobsSchema = new mongoose.Schema(
       required: [true, "Valid URL is required"],
       trim: true,
     },
-    companyProfileSrc: {
-      type: String,
-      required: [true, "Company profile URL is required"],
-    },
-    companyName: {
-      type: String,
-      required: [true, "Company name is required"],
-      trim: true,
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Companies",
+      required: [true, "Company is required"],
     },
     jobPosition: {
       type: String,

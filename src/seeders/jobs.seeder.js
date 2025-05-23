@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
-const Jobs = require("../models/jobs.model");
+const Jobs = require("../models/job.model");
 const { mongodbUri } = require("../configs/env.config");
 
 const jobsPath = path.join(__dirname, "../data/jobs.json");

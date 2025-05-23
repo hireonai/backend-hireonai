@@ -6,12 +6,12 @@ const profileSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
+      required: [true, "User is required"],
     },
     fullname: {
       type: String,
       trim: true,
-      required: true,
+      required: [true, "Fullname is required"],
     },
     phone: {
       type: String,

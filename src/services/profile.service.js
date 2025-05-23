@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Profile = require("../models/profile.model");
-const Jobs = require("../models/jobs.model");
+const Jobs = require("../models/job.model");
 const { uploadToGCS, deleteFromGCS } = require("../utils/gcp.util");
 const CustomError = require("../utils/error.util");
 
