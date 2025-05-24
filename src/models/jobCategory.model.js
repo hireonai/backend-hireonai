@@ -17,4 +17,4 @@ JobCategoriesSchema.index({
   name: "text",
 });
 
-module.exports = mongoose.model("CompanyIndustries", JobCategoriesSchema);
+module.exports = mongoose.model("JobCategories", JobCategoriesSchema);

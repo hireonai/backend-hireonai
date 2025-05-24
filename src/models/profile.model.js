@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-const profileSchema = new Schema(
+const profileSchema = new mongoose.Schema(
   {
     userId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
       required: [true, "User is required"],
     },
@@ -48,7 +47,7 @@ const profileSchema = new Schema(
       default: [],
     },
     bookmarkJobs: {
-      type: [Schema.Types.ObjectId],
+      type: [mongoose.Schema.Types.ObjectId],
       ref: "Jobs",
       default: [],
     },

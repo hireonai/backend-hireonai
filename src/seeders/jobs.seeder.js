@@ -1,39 +1,42 @@
-const fs = require("fs");
-const path = require("path");
 const mongoose = require("mongoose");
-const Jobs = require("../models/job.model");
+const Job = require("../models/job.model");
 const { mongodbUri } = require("../configs/env.config");
+const data = require("../data/jobs.json");
 
-const jobsPath = path.join(__dirname, "../data/jobs.json");
-const rawJobsData = JSON.parse(fs.readFileSync(jobsPath, "utf8"));
+const parseNumber = (value) => {
+  if (!value) return 0;
+  return parseInt(String(value).replace(/[^\d]/g, ""), 10);
+};
 
-const mappedJobsData = rawJobsData.map((job) => ({
-  url: job.url,
-  companyProfileSrc: job.company_profile_src,
-  companyName: job.company_name,
-  jobPosition: job.job_position,
-  employmentType: job.employment_type,
-  workingLocationType: job.working_location_type,
-  workingLocation: job.working_location,
-  minExperience: job.min_experience,
-  salary: job.salary,
-  jobDescList: job.job_desc_list,
-  jobQualificationsList: job.job_qualification_list,
-}));
+const parseArray = (value) => {
+  const matches = value.match(/\[(.*)\]/);
+  if (!matches) return [];
+  return matches[1].split(",").map((v) => v.trim().replace(/'/g, ""));
+};
 
-async function seedJobs() {
+async function seedJobs({ categoryMap, experienceMap, companyMap }) {
   try {
     await mongoose.connect(mongodbUri);
+    await Job.deleteMany();
+    console.log("Jobs collection cleared!");
 
-    await Jobs.deleteMany();
+    const mappedJobs = data.map((job) => ({
+      categories: parseArray(job.kategori).map((k) => categoryMap[k]),
+      url: job.url,
+      jobPosition: job.job_position,
+      employmentType: job.employment_type,
+      workingLocationType: job.working_location_type,
+      workingLocation: job.working_location,
+      minExperienceId: experienceMap[job.min_experience.trim()],
+      minSalary: parseNumber(job.min_salary.trim()),
+      maxSalary: parseNumber(job.max_salary.trim()),
+      jobDescList: parseArray(job.job_desc_list),
+      jobQualificationsList: parseArray(job.job_qualification_list),
+      companyId: companyMap[job.company_name.trim()],
+    }));
 
-    console.log("Jobs collection cleared.");
-
-    await Jobs.insertMany(mappedJobsData);
-
-    console.log("Jobs data seeded successfully!");
-  } catch (error) {
-    console.error("Seeding error: ", error);
+    await Job.insertMany(mappedJobs);
+    console.log("Jobs seeded!");
   } finally {
     await mongoose.disconnect();
   }

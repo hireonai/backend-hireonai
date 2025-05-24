@@ -17,4 +17,4 @@ JobMinExperiencesSchema.index({
   name: "text",
 });
 
-module.exports = mongoose.model("CompanyIndustries", JobMinExperiencesSchema);
+module.exports = mongoose.model("JobMinExperiences", JobMinExperiencesSchema);

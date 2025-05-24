@@ -35,13 +35,18 @@ const jobsSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    minExperience: {
-      type: String,
+    minExperienceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "JobMinExperiences",
       required: [true, "Minimal experience is required"],
     },
-    salary: {
-      type: String,
-      required: [true, "Salary is required"],
+    minSalary: {
+      type: Number,
+      required: [true, "Minimal salary is required"],
+    },
+    maxSalary: {
+      type: Number,
+      required: [true, "Maximal salary is required"],
     },
     jobDescList: {
       type: [String],

@@ -21,8 +21,13 @@ const CompaniesSchema = new mongoose.Schema(
       required: [true, "Company location is required"],
       trim: true,
     },
-    industriId: {
-      type: Schema.Types.ObjectId,
+    employeesCount: {
+      type: String,
+      required: [true, "Number of employees is required"],
+      trim: true,
+    },
+    industryId: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: "CompanyIndustries",
       required: [true, "Company industry is required"],
     },
