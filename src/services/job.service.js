@@ -66,6 +66,53 @@ const analyzeUserCV = async (user, jobId) => {
   }
 };
 
+const coverLetterUser = async (user, jobId, specificRequest) => {
+  try {
+    const profile = await Profile.findOne({ userId: user._id }).select("cvUrl");
+
+    if (!profile || !profile.cvUrl) {
+      throw new CustomError("CV not found", 404);
+    }
+
+    const job = await Job.findById(jobId)
+      .select(
+        "jobDescList jobPosition jobQualificationsList minExperienceId companyId url workingLocation"
+      )
+      .populate("minExperienceId", "name")
+      .populate("companyId", "name location");
+
+    if (!job) {
+      throw new CustomError("Job not found", 404);
+    }
+    const response = await axios.post(
+      `${env.mlServiceUrl}/gen-ai-services/cover_letter_generator`,
+      {
+        current_date: new Date().toISOString().split("T")[0],
+        cv_url: profile.cvUrl,
+        job_details: {
+          company_location: job.companyId.location,
+          company_name: job.companyId.name,
+          job_desc_list: job.jobDescList,
+          job_position: job.jobPosition,
+          job_qualification_list: job.jobQualificationsList,
+          min_experience: job.minExperienceId.name,
+          url: job.url,
+          working_location: job.workingLocation,
+        },
+        spesific_request: specificRequest,
+      }
+    );
+
+    return response.data.pdf_url;
+  } catch (err) {
+    if (err instanceof CustomError) {
+      throw err;
+    }
+    throw new CustomError(err.message, 500);
+  }
+};
+
 module.exports = {
   analyzeUserCV,
+  coverLetterUser,
 };
