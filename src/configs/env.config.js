@@ -5,6 +5,7 @@ module.exports = {
   port: process.env.PORT,
   nodeEnv: process.env.NODE_ENV,
   frontendUrl: process.env.FRONTEND_URL,
+  mlServiceUrl: process.env.ML_SERVICE_URL,
   mongodbUri: process.env.MONGODB_URI,
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN,
