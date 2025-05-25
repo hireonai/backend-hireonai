@@ -4,7 +4,50 @@ const Profile = require("../models/profile.model");
 const Job = require("../models/job.model");
 const AnalysisResult = require("../models/analysisResult.model");
 const JobMinExperiences = require("../models/jobMinExperience.model");
+const JobCategories = require("../models/jobCategory.model");
+const CompanyIndustries = require("../models/companyIndustry.model");
+const Company = require("../models/company.model");
 const CustomError = require("../utils/error.util");
+
+const getUserJobDetails = async (user, jobId) => {
+  try {
+    const job = await Job.findById(jobId)
+      .populate({
+        path: "categories",
+        model: "JobCategories",
+        select: "name",
+      })
+      .populate("minExperienceId", "name");
+    const company = await Company.findById(job.companyId._id).populate(
+      "industryId",
+      "name"
+    );
+    if (!job) {
+      throw new CustomError("Job not found", 404);
+    }
+    const analysisResult = await AnalysisResult.findOne({
+      userId: user._id,
+      jobId: jobId,
+    }).select(
+      "explanation cvRelevanceScore skilIdentificationDict suggestions"
+    );
+
+    const updated = job.toObject();
+    updated.company = company.toObject();
+    updated.company.industry = company.industryId;
+    delete updated.company.industryId;
+    updated.minExperience = job.minExperienceId;
+    delete updated.minExperienceId;
+    delete updated.companyId;
+    updated.analysisResult = analysisResult;
+    return updated;
+  } catch (err) {
+    if (err instanceof CustomError) {
+      throw err;
+    }
+    throw new CustomError(err.message, 500);
+  }
+};
 
 const analyzeUserCV = async (user, jobId) => {
   try {
@@ -113,6 +156,7 @@ const coverLetterUser = async (user, jobId, specificRequest) => {
 };
 
 module.exports = {
+  getUserJobDetails,
   analyzeUserCV,
   coverLetterUser,
 };

@@ -1,8 +1,32 @@
 const Joi = require("joi");
 const authMiddleware = require("../middlewares/authentication.middleware");
-const { analyzeCV, coverLetter } = require("../handlers/job.handler");
+const {
+  getJobDetails,
+  analyzeCV,
+  coverLetter,
+} = require("../handlers/job.handler");
 
 module.exports = [
+  {
+    method: "GET",
+    path: "/jobs/{jobId}",
+    options: {
+      pre: [{ method: authMiddleware }],
+      tags: ["api", "jobs"],
+      description: "Get job details",
+      handler: getJobDetails,
+      validate: {
+        headers: Joi.object({
+          authorization: Joi.string()
+            .required()
+            .description("Authorization header with Bearer token"),
+        }).unknown(),
+        params: Joi.object({
+          jobId: Joi.string().required(),
+        }),
+      },
+    },
+  },
   {
     method: "POST",
     path: "/jobs/{jobId}/analyze-cv",

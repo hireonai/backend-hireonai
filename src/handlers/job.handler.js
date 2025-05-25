@@ -1,6 +1,24 @@
-const { analyzeUserCV, coverLetterUser } = require("../services/job.service");
+const {
+  getUserJobDetails,
+  analyzeUserCV,
+  coverLetterUser,
+} = require("../services/job.service");
 const ResponseAPI = require("../utils/response.util");
 
+const getJobDetails = async (request, h) => {
+  const user = request.auth.credentials;
+  const jobId = request.params.jobId;
+  try {
+    const jobDetails = await getUserJobDetails(user, jobId);
+    return ResponseAPI.success(
+      h,
+      jobDetails,
+      "Job details successfully retrieved"
+    );
+  } catch (err) {
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
+  }
+};
 const analyzeCV = async (request, h) => {
   const user = request.auth.credentials;
   const jobId = request.params.jobId;
@@ -29,6 +47,7 @@ const coverLetter = async (request, h) => {
 };
 
 module.exports = {
+  getJobDetails,
   analyzeCV,
   coverLetter,
 };
