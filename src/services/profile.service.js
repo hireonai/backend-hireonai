@@ -4,11 +4,52 @@ const Jobs = require("../models/job.model");
 const { uploadToGCS, deleteFromGCS } = require("../utils/gcp.util");
 const CustomError = require("../utils/error.util");
 
+const getUserProfile = async (user) => {
+  try {
+    const profile = await Profile.findOne({ userId: user._id })
+      .populate("userId", "username email verifiedAt")
+      .populate({
+        path: "bookmarkJobs",
+        select: "url jobPosition employmentType",
+        populate: {
+          path: "companyId",
+          select: "name",
+        },
+      });
+
+    if (!profile) {
+      return ResponseAPI.error(h, "Profile not found", 404);
+    }
+
+    const updated = profile.toObject();
+    updated.user = profile.userId;
+    delete updated.userId;
+    updated.bookmarkJobs = updated.bookmarkJobs.map((job) => {
+      const jobObj = { ...job };
+      jobObj.company = jobObj.companyId;
+      delete jobObj.companyId;
+      return jobObj;
+    });
+    return updated;
+  } catch (err) {
+    if (err instanceof CustomError) {
+      throw err;
+    }
+    throw new CustomError(err.message, 500);
+  }
+};
 const updateUserProfile = async (user, payload) => {
   try {
     const profile = await Profile.findOne({ userId: user._id })
       .populate("userId", "username email verifiedAt")
-      .populate("bookmarkJobs");
+      .populate({
+        path: "bookmarkJobs",
+        select: "url jobPosition employmentType",
+        populate: {
+          path: "companyId",
+          select: "name",
+        },
+      });
 
     if (!profile) {
       throw new CustomError("Profile not found", 404);
@@ -26,6 +67,12 @@ const updateUserProfile = async (user, payload) => {
     const updated = profile.toObject();
     updated.user = profile.userId;
     delete updated.userId;
+    updated.bookmarkJobs = updated.bookmarkJobs.map((job) => {
+      const jobObj = { ...job };
+      jobObj.company = jobObj.companyId;
+      delete jobObj.companyId;
+      return jobObj;
+    });
 
     return updated;
   } catch (err) {
@@ -216,6 +263,7 @@ const updateProfileCV = async (user, cv) => {
 };
 
 module.exports = {
+  getUserProfile,
   updateUserProfile,
   updateUserTagPreferences,
   addUserBookmarkJobs,

@@ -1,6 +1,8 @@
 const Profile = require("../models/profile.model");
+const Company = require("../models/company.model");
 const ResponseAPI = require("../utils/response.util");
 const {
+  getUserProfile,
   updateUserProfile,
   updateProfileCV,
   updateProfilePhoto,
@@ -13,17 +15,7 @@ const getProfile = async (request, h) => {
   let user = request.auth.credentials;
 
   try {
-    const profile = await Profile.findOne({ userId: user._id })
-      .populate("userId", "username email verifiedAt")
-      .populate("bookmarkJobs");
-
-    if (!profile) {
-      return ResponseAPI.error(h, "Profile not found", 404);
-    }
-
-    const updated = profile.toObject();
-    updated.user = profile.userId;
-    delete updated.userId;
+    const updated = await getUserProfile(user);
 
     return ResponseAPI.success(h, updated, "Profile successfully retrieved");
   } catch (err) {
