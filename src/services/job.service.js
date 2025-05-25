@@ -25,8 +25,8 @@ const analyzeUserCV = async (user, jobId) => {
     const response = await axios.post(
       `${env.mlServiceUrl}/gen-ai-services/cv_job_analysis_flash`,
       {
-        cv_cloud_path: "user_cv/6831c533f4a50c7c69a2bde9-1748153594549.pdf",
-        // cv_cloud_path: profile.cvUrl,
+        // cv_cloud_path: "user_cv/6831c533f4a50c7c69a2bde9-1748153594549.pdf",
+        cv_url: profile.cvUrl,
         job_details: {
           job_desc_list: job.jobDescList,
           job_position: job.jobPosition,
