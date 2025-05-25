@@ -92,6 +92,26 @@ const init = async () => {
     scope: ["email", "public_profile"],
   });
 
+  server.ext("onPreResponse", (request, h) => {
+    const response = request.response;
+
+    if (response.isBoom) {
+      const { statusCode } = response.output;
+      const { error, message } = response.output.payload;
+
+      return h
+        .response({
+          statusCode,
+          success: false,
+          error,
+          message,
+        })
+        .code(statusCode);
+    }
+
+    return h.continue;
+  });
+
   server.route(routes);
 
   await server.start();
