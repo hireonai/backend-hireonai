@@ -55,7 +55,7 @@ module.exports = [
   },
   {
     method: "PATCH",
-    path: "/profile/tagPreferences",
+    path: "/profile/tag-preferences",
     options: {
       pre: [{ method: authMiddleware }],
       tags: ["api", "profile"],
@@ -75,7 +75,7 @@ module.exports = [
   },
   {
     method: "POST",
-    path: "/profile/bookmarkJobs",
+    path: "/profile/bookmark-job",
     options: {
       pre: [{ method: authMiddleware }],
       tags: ["api", "profile"],
@@ -95,7 +95,7 @@ module.exports = [
   },
   {
     method: "DELETE",
-    path: "/profile/bookmarkJobs/{jobId}",
+    path: "/profile/bookmark-job/{jobId}",
     options: {
       pre: [{ method: authMiddleware }],
       tags: ["api", "profile"],
