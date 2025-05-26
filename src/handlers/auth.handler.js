@@ -203,7 +203,8 @@ const register = async (request, h) => {
     return ResponseAPI.success(
       h,
       data,
-      "Account created. Please verify via email."
+      "Account created. Please verify via email.",
+      201
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
