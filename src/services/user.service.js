@@ -106,7 +106,7 @@ const sendingActivationEmail = async ({ email, token }) => {
   try {
     await sendEmail({
       to: email,
-      subject: "Verify Your Account",
+      subject: "Activate Your Account",
       html: emailContent,
     });
   } catch (error) {
@@ -201,7 +201,11 @@ const loginUser = async ({ username, password }) => {
     if (!user || !(await user.comparePassword(password)))
       throw new CustomError("Invalid email/username or password.", 401);
     if (!user.verifiedAt)
-      throw new CustomError("Please verify your account first.", 403);
+      throw new CustomError(
+        "Please verify your account first. Check your inbox or spam at " +
+          user.email,
+        403
+      );
     return user;
   } catch (error) {
     if (error instanceof CustomError) {
