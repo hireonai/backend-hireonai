@@ -127,6 +127,11 @@ module.exports = [
         allow: "multipart/form-data",
         multipart: true,
       },
+      plugins: {
+        "hapi-swagger": {
+          payloadType: "form",
+        },
+      },
       validate: {
         headers: Joi.object({
           authorization: Joi.string()
@@ -155,6 +160,11 @@ module.exports = [
         parse: true,
         allow: "multipart/form-data",
         multipart: true,
+      },
+      plugins: {
+        "hapi-swagger": {
+          payloadType: "form",
+        },
       },
       validate: {
         headers: Joi.object({
