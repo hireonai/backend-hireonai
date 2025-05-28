@@ -280,6 +280,8 @@ const sendActivationEmailUser = async ({ email }) => {
     const user = await User.findOne({ email });
     if (!user) throw new CustomError("User not found.", 404);
 
+    if (user.verifiedAt) throw new CustomError("User already activated.", 409);
+
     const token = generateToken(user, "1h");
     await sendingActivationEmail({ email, token });
   } catch (error) {
