@@ -1,10 +1,22 @@
 const {
+  getUserJobs,
   getUserJobDetails,
   analyzeUserCV,
   coverLetterUser,
 } = require("../services/job.service");
 const ResponseAPI = require("../utils/response.util");
 
+const getJobs = async (request, h) => {
+  try {
+    const jobs = await getUserJobs(request);
+    if (!jobs || jobs.length === 0) {
+      return ResponseAPI.success(h, [], "Jobs not found");
+    }
+    return ResponseAPI.success(h, jobs, "Jobs successfully retrieved");
+  } catch (err) {
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
+  }
+};
 const getJobDetails = async (request, h) => {
   const user = request.auth.credentials;
   const jobId = request.params.jobId;
@@ -47,6 +59,7 @@ const coverLetter = async (request, h) => {
 };
 
 module.exports = {
+  getJobs,
   getJobDetails,
   analyzeCV,
   coverLetter,

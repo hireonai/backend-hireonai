@@ -1,12 +1,37 @@
 const Joi = require("joi");
 const authMiddleware = require("../middlewares/authentication.middleware");
 const {
+  getJobs,
   getJobDetails,
   analyzeCV,
   coverLetter,
 } = require("../handlers/job.handler");
 
 module.exports = [
+  {
+    method: "GET",
+    path: "/jobs",
+    options: {
+      tags: ["api", "jobs"],
+      description: "Get all jobs",
+      handler: getJobs,
+      validate: {
+        headers: Joi.object({
+          authorization: Joi.string().description(
+            "Authorization header with Bearer token"
+          ),
+        }).unknown(),
+        query: Joi.object({
+          keyword: Joi.string().optional(),
+          minSalary: Joi.number().optional(),
+          maxSalary: Joi.number().optional(),
+          experience: Joi.string().optional(),
+          category: Joi.string().optional(),
+          industry: Joi.string().optional(),
+        }),
+      },
+    },
+  },
   {
     method: "GET",
     path: "/jobs/{jobId}",
