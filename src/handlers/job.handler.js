@@ -14,7 +14,7 @@ const getJobs = async (request, h) => {
       return ResponseAPI.success(
         h,
         {
-          data: [],
+          jobs: [],
           pagination: {
             currentPage: parseInt(request.query.page) || 1,
             totalPages: 0,
@@ -31,7 +31,7 @@ const getJobs = async (request, h) => {
     return ResponseAPI.success(
       h,
       {
-        data: result.jobs,
+        jobs: result.jobs,
         pagination: result.pagination,
       },
       "Jobs successfully retrieved"
