@@ -1,0 +1,36 @@
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy the rest of the application code
+COPY . .
+
+# Build/prepare the application
+# (This is a placeholder - add build steps if needed)
+
+# Start a new, final image
+FROM node:18-alpine
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=8080
+
+WORKDIR /app
+
+# Copy only necessary files from the builder stage
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/src ./src
+
+# Ensure keys directory exists
+RUN mkdir -p src/keys
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Command to run the application
+CMD ["node", "src/server.js"] 
