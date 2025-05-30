@@ -17,7 +17,7 @@ const analysisResultsSchema = new mongoose.Schema(
       required: [true, "CV relevance is required"],
     },
     explanation: {
-      type: [String],
+      type: String,
       required: [true, "Explanation is required"],
     },
     skilIdentificationDict: {
@@ -25,27 +25,17 @@ const analysisResultsSchema = new mongoose.Schema(
       required: [true, "Skill identification is required"],
     },
     suggestions: {
-      type: [
-        {
-          keypoint: { type: String, required: [true, "Keypoint is required"] },
-          penjelasan: {
-            type: String,
-            required: [true, "Penjelasan is required"],
-          },
-        },
-      ],
+      type: [String],
       required: [true, "Suggestions are required"],
+    },
+    improvements: {
+      type: [String],
+      required: [true, "Improvements are required"],
     },
   },
   {
     timestamps: true,
   }
 );
-
-analysisResultsSchema.index({
-  name: "text",
-  description: "text",
-  location: "text",
-});
 
 module.exports = mongoose.model("AnalysisResults", analysisResultsSchema);

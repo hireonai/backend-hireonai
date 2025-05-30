@@ -439,7 +439,7 @@ const getUserJobDetails = async (user, jobId) => {
       userId: user._id,
       jobId: jobId,
     }).select(
-      "explanation cvRelevanceScore skilIdentificationDict suggestions"
+      "explanation cvRelevanceScore skilIdentificationDict suggestions improvements"
     );
 
     const updated = job.toObject();
@@ -497,6 +497,7 @@ const analyzeUserCV = async (user, jobId) => {
         explanation: analysisResult.explaination,
         skilIdentificationDict: analysisResult.skill_identification_dict,
         suggestions: analysisResult.suggestions,
+        improvements: analysisResult.areas_for_improvement,
       },
       {
         upsert: true,
@@ -506,6 +507,7 @@ const analyzeUserCV = async (user, jobId) => {
           skilIdentificationDict: 1,
           suggestions: 1,
           explanation: 1,
+          improvements: 1,
         },
       }
     );
