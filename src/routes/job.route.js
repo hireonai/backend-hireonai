@@ -28,6 +28,17 @@ module.exports = [
           experience: Joi.string().optional(),
           category: Joi.string().optional(),
           industry: Joi.string().optional(),
+          page: Joi.number()
+            .integer()
+            .min(1)
+            .default(1)
+            .description("Page number (starts from 1)"),
+          limit: Joi.number()
+            .integer()
+            .min(1)
+            .max(100)
+            .default(10)
+            .description("Number of items per page (max 100)"),
         }),
       },
     },

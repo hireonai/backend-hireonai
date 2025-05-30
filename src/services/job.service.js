@@ -12,9 +12,32 @@ const Company = require("../models/company.model");
 const CustomError = require("../utils/error.util");
 const { verifyToken } = require("../utils/token.util");
 
+const createPaginationResponse = (page, limit, totalItems) => {
+  const currentPage = parseInt(page);
+  const itemsPerPage = parseInt(limit);
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  return {
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
+    hasNextPage: currentPage < totalPages,
+    hasPrevPage: currentPage > 1,
+  };
+};
+
 const getUserJobs = async (request) => {
-  const { keyword, minSalary, maxSalary, experience, category, industry } =
-    request.query;
+  const {
+    keyword,
+    minSalary,
+    maxSalary,
+    experience,
+    category,
+    industry,
+    page = 1,
+    limit = 10,
+  } = request.query;
   const filters = {
     keyword,
     minSalary,
@@ -23,6 +46,12 @@ const getUserJobs = async (request) => {
     category,
     industry,
   };
+
+  const paginationParams = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+  };
+
   try {
     let user = null;
     const authHeader = request.headers.authorization;
@@ -47,21 +76,29 @@ const getUserJobs = async (request) => {
       }
     }
 
-    let jobs;
+    let result;
 
     if (!user) {
-      jobs = await getJobsForGuest(filters);
+      result = await getJobsForGuest(filters, paginationParams);
     } else {
       const profile = await Profile.findOne({ userId: user._id });
 
       if (profile?.cvUrl) {
-        jobs = await getJobsWithRecommendation(profile.cvUrl, filters);
+        result = await getJobsWithRecommendation(
+          profile.cvUrl,
+          filters,
+          paginationParams
+        );
       } else {
-        jobs = await getJobsWithPreferences(profile.tagPreferences, filters);
+        result = await getJobsWithPreferences(
+          profile.tagPreferences,
+          filters,
+          paginationParams
+        );
       }
     }
 
-    return jobs;
+    return result;
   } catch (err) {
     if (err instanceof CustomError) {
       throw err;
@@ -153,12 +190,18 @@ const formatJobs = (jobDocs, companyMap, scoreMatch = null) => {
   });
 };
 
-const getJobsForGuest = async (filters = {}) => {
+const getJobsForGuest = async (filters = {}, paginationParams = {}) => {
+  const { page = 1, limit = 10 } = paginationParams;
+  const skip = (page - 1) * limit;
+
   const filterQuery = await buildFilterQuery(filters);
+
+  const totalItems = await Job.countDocuments(filterQuery);
 
   const jobs = await Job.find(filterQuery)
     .sort({ createdAt: -1 })
-    .limit(10)
+    .skip(skip)
+    .limit(limit)
     .populate({
       path: "categories",
       model: "JobCategories",
@@ -176,10 +219,19 @@ const getJobsForGuest = async (filters = {}) => {
 
   const companyMap = new Map(companies.map((c) => [c._id.toString(), c]));
 
-  return formatJobs(jobs, companyMap, null);
+  return {
+    jobs: formatJobs(jobs, companyMap, null),
+    pagination: createPaginationResponse(page, limit, totalItems),
+  };
 };
 
-const getJobsWithRecommendation = async (cvUrl, filters = {}) => {
+const getJobsWithRecommendation = async (
+  cvUrl,
+  filters = {},
+  paginationParams = {}
+) => {
+  const { page = 1, limit = 10 } = paginationParams;
+
   const response = await axios.post(
     `${env.mlServiceUrl}/recommendation-engine/recommendations`,
     { cv_storage_url: cvUrl }
@@ -198,7 +250,20 @@ const getJobsWithRecommendation = async (cvUrl, filters = {}) => {
       ? { $and: [baseQuery, filterQuery] }
       : baseQuery;
 
-  const jobDocs = await Job.find(finalQuery)
+  // Get total count for pagination
+  const totalItems = await Job.countDocuments(finalQuery);
+
+  // Calculate pagination for recommendations
+  const skip = (page - 1) * limit;
+  const paginatedRecommendations = recommendations.slice(skip, skip + limit);
+
+  const jobDocs = await Job.find({
+    _id: {
+      $in: paginatedRecommendations.map(
+        (r) => new mongoose.Types.ObjectId(r.job_id)
+      ),
+    },
+  })
     .populate({
       path: "categories",
       model: "JobCategories",
@@ -221,20 +286,31 @@ const getJobsWithRecommendation = async (cvUrl, filters = {}) => {
     recommendations.map((r) => [r.job_id, r.similarity_score])
   );
 
-  const orderedJobs = recommendations
+  const orderedJobs = paginatedRecommendations
     .map((r) => jobMap.get(r.job_id))
-    .filter(Boolean)
-    .slice(0, 5);
+    .filter(Boolean);
 
-  return formatJobs(orderedJobs, companyMap).map((job) => ({
+  const formattedJobs = formatJobs(orderedJobs, companyMap).map((job) => ({
     ...job,
     scoreMatch: `${scoreMap.get(job._id.toString()).toFixed(1)}%`,
   }));
+
+  return {
+    jobs: formattedJobs,
+    pagination: createPaginationResponse(page, limit, totalItems),
+  };
 };
 
-const getJobsWithPreferences = async (tagPreferences, filters = {}) => {
+const getJobsWithPreferences = async (
+  tagPreferences,
+  filters = {},
+  paginationParams = {}
+) => {
+  const { page = 1, limit = 10 } = paginationParams;
+  const skip = (page - 1) * limit;
+
   if (!tagPreferences || tagPreferences.length === 0) {
-    return await getJobsForGuest(filters);
+    return await getJobsForGuest(filters, paginationParams);
   }
 
   const preferenceQuery = {
@@ -277,9 +353,13 @@ const getJobsWithPreferences = async (tagPreferences, filters = {}) => {
       ? { $and: [preferenceQuery, filterQuery] }
       : preferenceQuery;
 
+  // Get total count for pagination
+  const totalItems = await Job.countDocuments(finalQuery);
+
   const jobs = await Job.find(finalQuery)
     .sort({ createdAt: -1 })
-    .limit(10)
+    .skip(skip)
+    .limit(limit)
     .populate({
       path: "categories",
       model: "JobCategories",
@@ -333,7 +413,10 @@ const getJobsWithPreferences = async (tagPreferences, filters = {}) => {
     filteredJobs = jobs.filter((job) => allJobIds.has(job._id.toString()));
   }
 
-  return formatJobs(filteredJobs, companyMap, null);
+  return {
+    jobs: formatJobs(filteredJobs, companyMap, null),
+    pagination: createPaginationResponse(page, limit, totalItems),
+  };
 };
 
 const getUserJobDetails = async (user, jobId) => {

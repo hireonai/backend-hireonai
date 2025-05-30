@@ -8,11 +8,34 @@ const ResponseAPI = require("../utils/response.util");
 
 const getJobs = async (request, h) => {
   try {
-    const jobs = await getUserJobs(request);
-    if (!jobs || jobs.length === 0) {
-      return ResponseAPI.success(h, [], "Jobs not found");
+    const result = await getUserJobs(request);
+
+    if (!result || !result.jobs || result.jobs.length === 0) {
+      return ResponseAPI.success(
+        h,
+        {
+          data: [],
+          pagination: {
+            currentPage: parseInt(request.query.page) || 1,
+            totalPages: 0,
+            totalItems: 0,
+            itemsPerPage: parseInt(request.query.limit) || 10,
+            hasNextPage: false,
+            hasPrevPage: false,
+          },
+        },
+        "Jobs not found"
+      );
     }
-    return ResponseAPI.success(h, jobs, "Jobs successfully retrieved");
+
+    return ResponseAPI.success(
+      h,
+      {
+        data: result.jobs,
+        pagination: result.pagination,
+      },
+      "Jobs successfully retrieved"
+    );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
