@@ -17,7 +17,7 @@ FROM node:18-alpine
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=8080
+# Port is set automatically by Cloud Run
 
 WORKDIR /app
 

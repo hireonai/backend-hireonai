@@ -61,7 +61,6 @@ jobs:
           --allow-unauthenticated \
           --set-env-vars="APP_NAME=${{ secrets.APP_NAME }}" \
           --set-env-vars="NODE_ENV=production" \
-          --set-env-vars="PORT=8080" \
           --set-env-vars="FRONTEND_URL=${{ secrets.FRONTEND_URL }}" \
           --set-env-vars="ML_SERVICE_URL=${{ secrets.ML_SERVICE_URL }}" \
           --set-env-vars="MONGODB_URI=${{ secrets.MONGODB_URI }}" \
