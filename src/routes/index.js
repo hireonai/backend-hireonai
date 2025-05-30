@@ -5,7 +5,6 @@ const jobMinExperienceRoutes = require("./jobMinExperience.route");
 const jobCategoryRoutes = require("./jobCategory.route");
 const companyIndustryRoutes = require("./companyIndustry.route");
 
-// Root route to redirect to documentation
 const rootRoute = {
   method: "GET",
   path: "/",
@@ -20,7 +19,7 @@ const rootRoute = {
 };
 
 module.exports = [
-  rootRoute, // Add the root route
+  rootRoute,
   ...authRoutes,
   ...profileRoutes,
   ...jobRoutes,

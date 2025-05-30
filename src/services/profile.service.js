@@ -1,8 +1,10 @@
+const axios = require("axios");
 const mongoose = require("mongoose");
 const Profile = require("../models/profile.model");
 const Jobs = require("../models/job.model");
 const { uploadToGCS, deleteFromGCS } = require("../utils/gcp.util");
 const CustomError = require("../utils/error.util");
+const env = require("../configs/env.config");
 
 const getUserProfile = async (user) => {
   try {
@@ -242,12 +244,20 @@ const updateProfileCV = async (user, cv) => {
     }
 
     if (profile.cvUrl) {
-      await deleteFromGCS(profile.cvUrl);
+      // await deleteFromGCS(profile.cvUrl);
     }
 
     const cvExt = cv.hapi.filename.split(".").pop();
     const cvPath = `user_cv/${user._id}-${Date.now()}.${cvExt}`;
     const cvUrl = await uploadToGCS(cv._data, cvPath, cvType);
+
+    await axios.post(
+      `${env.mlServiceUrl}/recommendation-engine/cv_embeddings`,
+      {
+        cv_storage_url: cvUrl,
+        user_id: user._id,
+      }
+    );
 
     profile.cvUrl = cvUrl;
 

@@ -85,7 +85,7 @@ const getUserJobs = async (request) => {
 
       if (profile?.cvUrl) {
         result = await getJobsWithRecommendation(
-          profile.cvUrl,
+          user._id,
           filters,
           paginationParams
         );
@@ -226,15 +226,19 @@ const getJobsForGuest = async (filters = {}, paginationParams = {}) => {
 };
 
 const getJobsWithRecommendation = async (
-  cvUrl,
+  userId,
   filters = {},
   paginationParams = {}
 ) => {
   const { page = 1, limit = 10 } = paginationParams;
 
-  const response = await axios.post(
+  const response = await axios.get(
     `${env.mlServiceUrl}/recommendation-engine/recommendations`,
-    { cv_storage_url: cvUrl }
+    {
+      params: {
+        user_id: userId,
+      },
+    }
   );
 
   const recommendations = response.data.recommendations;
@@ -250,10 +254,8 @@ const getJobsWithRecommendation = async (
       ? { $and: [baseQuery, filterQuery] }
       : baseQuery;
 
-  // Get total count for pagination
   const totalItems = await Job.countDocuments(finalQuery);
 
-  // Calculate pagination for recommendations
   const skip = (page - 1) * limit;
   const paginatedRecommendations = recommendations.slice(skip, skip + limit);
 
@@ -353,7 +355,6 @@ const getJobsWithPreferences = async (
       ? { $and: [preferenceQuery, filterQuery] }
       : preferenceQuery;
 
-  // Get total count for pagination
   const totalItems = await Job.countDocuments(finalQuery);
 
   const jobs = await Job.find(finalQuery)
