@@ -26,12 +26,42 @@ const getUserProfile = async (user) => {
     const updated = profile.toObject();
     updated.user = profile.userId;
     delete updated.userId;
-    updated.bookmarkJobs = updated.bookmarkJobs.map((job) => {
-      const jobObj = { ...job };
-      jobObj.company = jobObj.companyId;
-      delete jobObj.companyId;
-      return jobObj;
-    });
+
+    if (profile.cvUrl) {
+      const response = await axios.get(
+        `${env.mlServiceUrl}/recommendation-engine/recommendations`,
+        {
+          params: {
+            user_id: user._id,
+          },
+        }
+      );
+
+      updated.bookmarkJobs = updated.bookmarkJobs.map((job) => {
+        const jobObj = { ...job };
+        jobObj.company = jobObj.companyId;
+        delete jobObj.companyId;
+
+        const foundJob = response.data.recommendations.find(
+          (j) => j.job_id === job._id.toString()
+        );
+
+        if (foundJob) {
+          jobObj.scoreMatch = `${foundJob.similarity_score.toFixed(1)}%`;
+        }
+
+        return jobObj;
+      });
+    } else {
+      updated.bookmarkJobs = updated.bookmarkJobs.map((job) => {
+        const jobObj = { ...job };
+        jobObj.company = jobObj.companyId;
+        jobObj.scoreMatch = null;
+        delete jobObj.companyId;
+        return jobObj;
+      });
+    }
+
     return updated;
   } catch (err) {
     if (err instanceof CustomError) {
