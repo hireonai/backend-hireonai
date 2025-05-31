@@ -203,8 +203,8 @@ const updateProfilePhoto = async (user, photo) => {
       await deleteFromGCS(profile.photoUrl);
     }
 
-    const photoExt = photo.hapi.filename.split(".").pop();
-    const photoPath = `photos/${user._id}-${Date.now()}.${photoExt}`;
+    const photoName = photo.hapi.filename.replace(/\s/g, "-");
+    const photoPath = `photos/${user._id}/${photoName}`;
     const photoUrl = await uploadToGCS(photo._data, photoPath, photoType);
 
     profile.photoUrl = photoUrl;
@@ -244,11 +244,11 @@ const updateProfileCV = async (user, cv) => {
     }
 
     if (profile.cvUrl) {
-      // await deleteFromGCS(profile.cvUrl);
+      await deleteFromGCS(profile.cvUrl);
     }
 
-    const cvExt = cv.hapi.filename.split(".").pop();
-    const cvPath = `user_cv/${user._id}-${Date.now()}.${cvExt}`;
+    const cvName = cv.hapi.filename.replace(/\s/g, "-");
+    const cvPath = `user_cv/${user._id}/${cvName}`;
     const cvUrl = await uploadToGCS(cv._data, cvPath, cvType);
 
     await axios.post(
