@@ -143,8 +143,11 @@ const buildFilterQuery = async (filters = {}) => {
   }
 
   if (filters.category) {
+    const categories = filters.category
+      .split(",")
+      .map((id) => new mongoose.Types.ObjectId(id));
     conditions.push({
-      categories: { $in: [new mongoose.Types.ObjectId(filters.category)] },
+      categories: { $in: categories },
     });
   }
 
