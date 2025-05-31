@@ -6,13 +6,13 @@ const getJobCategories = async (request, h) => {
     const jobCategories = await JobCategory.find();
 
     if (!jobCategories || jobCategories.length === 0) {
-      throw new Error("Job categories not found");
+      throw new Error("Job categories not found.");
     }
 
     return ResponseAPI.success(
       h,
       jobCategories,
-      "Job categories successfully retrieved"
+      "Job categories successfully retrieved."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, 500);

@@ -11,13 +11,37 @@ module.exports = [
       handler: getJobCategories,
       tags: ["api", "job categories"],
       description: "Get all job categories",
-      notes: "Returns a list of all job categories",
+      notes: "This endpoint retrieves all available job categories.",
       validate: {
         headers: Joi.object({
           authorization: Joi.string()
             .required()
-            .description("Authorization header with Bearer token"),
+            .description("e.g., 'Bearer your_token'"),
         }).unknown(),
+      },
+      plugins: {
+        "hapi-swagger": {
+          responses: {
+            200: {
+              description: "Job categories retrieved successfully",
+              examples: {
+                "application/json": {
+                  statusCode: 200,
+                  success: true,
+                  message: "Job categories successfully retrieved.",
+                  data: [
+                    {
+                      _id: "{{id}}",
+                      name: "{{name}}",
+                      createdAt: "{{createdAt}}",
+                      updatedAt: "{{updatedAt}}",
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
       },
     },
   },

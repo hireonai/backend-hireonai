@@ -6,13 +6,13 @@ const getCompanyIndustries = async (request, h) => {
     const companyIndustries = await CompanyIndustry.find();
 
     if (!companyIndustries || companyIndustries.length === 0) {
-      throw new Error("Company industries not found");
+      throw new Error("Company industries not found.");
     }
 
     return ResponseAPI.success(
       h,
       companyIndustries,
-      "Company industries successfully retrieved"
+      "Company industries successfully retrieved."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, 500);

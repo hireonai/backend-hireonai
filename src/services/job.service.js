@@ -63,16 +63,16 @@ const getUserJobs = async (request) => {
         const decoded = verifyToken(token);
 
         if (!decoded || !decoded.userId) {
-          throw new CustomError("Invalid token", 401);
+          throw new CustomError("Invalid token.", 401);
         }
 
         user = await User.findById(decoded.userId);
 
         if (!user) {
-          throw new CustomError("User not found", 404);
+          throw new CustomError("User not found.", 404);
         }
       } catch (err) {
-        throw new CustomError(err.message || "Forbidden to access", 403);
+        throw new CustomError(err.message || "Forbidden to access.", 403);
       }
     }
 
@@ -437,7 +437,7 @@ const getUserJobDetails = async (user, jobId) => {
       "name"
     );
     if (!job) {
-      throw new CustomError("Job not found", 404);
+      throw new CustomError("Job not found.", 404);
     }
     const analysisResult = await AnalysisResult.findOne({
       userId: user._id,
@@ -468,7 +468,7 @@ const analyzeUserCV = async (user, jobId) => {
     const profile = await Profile.findOne({ userId: user._id }).select("cvUrl");
 
     if (!profile || !profile.cvUrl) {
-      throw new CustomError("CV not found", 404);
+      throw new CustomError("CV not found.", 404);
     }
 
     const job = await Job.findById(jobId)
@@ -476,7 +476,7 @@ const analyzeUserCV = async (user, jobId) => {
       .populate("minExperienceId", "name");
 
     if (!job) {
-      throw new CustomError("Job not found", 404);
+      throw new CustomError("Job not found.", 404);
     }
 
     const response = await axios.post(
@@ -530,7 +530,7 @@ const coverLetterUser = async (user, jobId, specificRequest) => {
     const profile = await Profile.findOne({ userId: user._id }).select("cvUrl");
 
     if (!profile || !profile.cvUrl) {
-      throw new CustomError("CV not found", 404);
+      throw new CustomError("CV not found.", 404);
     }
 
     const job = await Job.findById(jobId)
@@ -541,7 +541,7 @@ const coverLetterUser = async (user, jobId, specificRequest) => {
       .populate("companyId", "name location");
 
     if (!job) {
-      throw new CustomError("Job not found", 404);
+      throw new CustomError("Job not found.", 404);
     }
     const response = await axios.post(
       `${env.mlServiceUrl}/gen-ai-services/cover_letter_generator`,

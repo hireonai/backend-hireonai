@@ -17,7 +17,7 @@ const getProfile = async (request, h) => {
   try {
     const updated = await getUserProfile(user);
 
-    return ResponseAPI.success(h, updated, "Profile successfully retrieved");
+    return ResponseAPI.success(h, updated, "Profile successfully retrieved.");
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
@@ -51,7 +51,7 @@ const updateTagPreferences = async (request, h) => {
     return ResponseAPI.success(
       h,
       { updatedTagPreferences },
-      "Tag preferences successfully updated"
+      "Tag preferences successfully updated."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
@@ -85,7 +85,7 @@ const deleteBookmarkJobs = async (request, h) => {
     return ResponseAPI.success(
       h,
       { updatedBookmarkJobs },
-      "Job successfully removed from bookmarks"
+      "Job successfully removed from bookmarks."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
@@ -99,7 +99,7 @@ const uploadProfileCV = async (request, h) => {
   try {
     const cvUrl = await updateProfileCV(user, cv);
 
-    return ResponseAPI.success(h, { cvUrl }, "CV successfully uploaded");
+    return ResponseAPI.success(h, { cvUrl }, "CV successfully uploaded.");
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
@@ -114,7 +114,7 @@ const uploadProfilePhoto = async (request, h) => {
     return ResponseAPI.success(
       h,
       { photoUrl },
-      "Profile photo successfully uploaded"
+      "Profile photo successfully uploaded."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);

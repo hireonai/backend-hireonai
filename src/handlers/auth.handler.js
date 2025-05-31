@@ -261,7 +261,11 @@ const forgotPassword = async (request, h) => {
 
     await forgotPasswordUser({ email });
 
-    return ResponseAPI.success(h, null, "Password reset link sent to email.");
+    return ResponseAPI.success(
+      h,
+      null,
+      "Password reset link sent. Please check your inbox/spam."
+    );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
@@ -287,7 +291,7 @@ const sendActivationEmail = async (request, h) => {
     return ResponseAPI.success(
       h,
       null,
-      "Activation email sent. Please check your inbox."
+      "Activation email sent. Please check your inbox/spam."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);

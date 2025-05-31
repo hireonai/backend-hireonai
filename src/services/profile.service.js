@@ -20,7 +20,7 @@ const getUserProfile = async (user) => {
       });
 
     if (!profile) {
-      return ResponseAPI.error(h, "Profile not found", 404);
+      return ResponseAPI.error(h, "Profile not found.", 404);
     }
 
     const updated = profile.toObject();
@@ -120,11 +120,11 @@ const updateUserTagPreferences = async (user, tagPreferences) => {
     const profile = await Profile.findOne({ userId: user._id });
 
     if (!profile) {
-      throw new CustomError("Profile not found", 404);
+      throw new CustomError("Profile not found.", 404);
     }
 
     if (!tagPreferences || !tagPreferences.length) {
-      throw new CustomError("Tag preferences is required", 400);
+      throw new CustomError("Tag preferences is required.", 400);
     }
 
     profile.tagPreferences = tagPreferences;
@@ -146,7 +146,7 @@ const addUserBookmarkJobs = async (user, jobId) => {
     }
     const job = await Jobs.findById(jobId);
     if (!job) {
-      throw new CustomError("Job not found", 404);
+      throw new CustomError("Job not found.", 404);
     }
 
     const profile = await Profile.findOneAndUpdate(
@@ -156,7 +156,7 @@ const addUserBookmarkJobs = async (user, jobId) => {
     );
 
     if (!profile) {
-      throw new CustomError("Profile not found", 404);
+      throw new CustomError("Profile not found.", 404);
     }
 
     return profile.bookmarkJobs;
@@ -175,12 +175,12 @@ const deleteUserBookmarkJobs = async (user, jobId) => {
     }
     const job = await Jobs.findById(jobId);
     if (!job) {
-      throw new CustomError("Job not found", 404);
+      throw new CustomError("Job not found.", 404);
     }
     const profile = await Profile.findOne({ userId: user._id });
 
     if (!profile) {
-      throw new CustomError("Profile not found", 404);
+      throw new CustomError("Profile not found.", 404);
     }
 
     const jobIndex = profile.bookmarkJobs.findIndex(
@@ -188,7 +188,7 @@ const deleteUserBookmarkJobs = async (user, jobId) => {
     );
 
     if (jobIndex === -1) {
-      throw new CustomError("Job not found in bookmarks", 404);
+      throw new CustomError("Job not found in bookmarks.", 404);
     }
 
     profile.bookmarkJobs.splice(jobIndex, 1);
@@ -208,16 +208,16 @@ const updateProfilePhoto = async (user, photo) => {
     const profile = await Profile.findOne({ userId: user._id });
 
     if (!profile) {
-      throw new CustomError("Profile not found", 404);
+      throw new CustomError("Profile not found.", 404);
     }
 
     if (!photo || !photo._data) {
-      throw new CustomError("Photo is required", 400);
+      throw new CustomError("Photo is required.", 400);
     }
 
     const photoSize = photo._data.length;
     if (photoSize > 5 * 1024 * 1024) {
-      throw new CustomError("Photo size must not be larger than 5MB", 400);
+      throw new CustomError("Photo size must not be larger than 5MB.", 400);
     }
 
     const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
@@ -255,22 +255,22 @@ const updateProfileCV = async (user, cv) => {
     const profile = await Profile.findOne({ userId: user._id });
 
     if (!profile) {
-      throw new CustomError("Profile not found", 404);
+      throw new CustomError("Profile not found.", 404);
     }
 
     if (!cv || !cv._data) {
-      throw new CustomError("CV is required", 400);
+      throw new CustomError("CV is required.", 400);
     }
 
     const cvSize = cv._data.length;
     if (cvSize > 5 * 1024 * 1024) {
-      throw new CustomError("CV size must not be larger than 5MB", 400);
+      throw new CustomError("CV size must not be larger than 5MB.", 400);
     }
 
     const validCVTypes = ["application/pdf"];
     const cvType = cv.hapi.headers["content-type"];
     if (!validCVTypes.includes(cvType)) {
-      throw new CustomError("Invalid CV type. Allowed types are PDF", 400);
+      throw new CustomError("Invalid CV type. Allowed types are PDF.", 400);
     }
 
     if (profile.cvUrl) {

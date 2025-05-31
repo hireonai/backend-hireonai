@@ -24,7 +24,7 @@ const getJobs = async (request, h) => {
             hasPrevPage: false,
           },
         },
-        "Jobs not found"
+        "Jobs not found."
       );
     }
 
@@ -34,7 +34,7 @@ const getJobs = async (request, h) => {
         jobs: result.jobs,
         pagination: result.pagination,
       },
-      "Jobs successfully retrieved"
+      "Jobs successfully retrieved."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
@@ -48,7 +48,7 @@ const getJobDetails = async (request, h) => {
     return ResponseAPI.success(
       h,
       jobDetails,
-      "Job details successfully retrieved"
+      "Job details successfully retrieved."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
@@ -59,7 +59,11 @@ const analyzeCV = async (request, h) => {
   const jobId = request.params.jobId;
   try {
     const result = await analyzeUserCV(user, jobId);
-    return ResponseAPI.success(h, result, "CV analysis successfully completed");
+    return ResponseAPI.success(
+      h,
+      result,
+      "CV analysis successfully completed."
+    );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
@@ -74,7 +78,7 @@ const coverLetter = async (request, h) => {
     return ResponseAPI.success(
       h,
       { coverletterUrl: result },
-      "Cover letter successfully generated"
+      "Cover letter successfully generated."
     );
   } catch (err) {
     return ResponseAPI.error(h, err.message, err.statusCode || 500);
