@@ -238,40 +238,45 @@ const getJobsWithRecommendation = async (
   const response = await axios.get(
     `${env.mlServiceUrl}/recommendation-engine/recommendations`,
     {
-      params: {
-        user_id: userId,
-      },
-      headers: {
-        "X-API-Key": env.mlServiceApiKey,
-      },
+      params: { user_id: userId },
+      headers: { "X-API-Key": env.mlServiceApiKey },
     }
   );
 
   const recommendations = response.data.recommendations;
-  const recommendedIds = recommendations.map(
+
+  const filterQuery = await buildFilterQuery(filters);
+
+  let validJobIds = [];
+  if (Object.keys(filterQuery).length > 0) {
+    const allRecommendedIds = recommendations.map(
+      (r) => new mongoose.Types.ObjectId(r.job_id)
+    );
+    const baseQuery = { _id: { $in: allRecommendedIds } };
+    const finalQuery = { $and: [baseQuery, filterQuery] };
+
+    const validJobs = await Job.find(finalQuery).select("_id");
+    validJobIds = validJobs.map((job) => job._id.toString());
+  }
+
+  const filteredRecommendations =
+    Object.keys(filterQuery).length > 0
+      ? recommendations.filter((r) => validJobIds.includes(r.job_id))
+      : recommendations;
+
+  const totalItems = filteredRecommendations.length;
+
+  const skip = (page - 1) * limit;
+  const paginatedRecommendations = filteredRecommendations.slice(
+    skip,
+    skip + limit
+  );
+
+  const paginatedJobIds = paginatedRecommendations.map(
     (r) => new mongoose.Types.ObjectId(r.job_id)
   );
 
-  const filterQuery = await buildFilterQuery(filters);
-  const baseQuery = { _id: { $in: recommendedIds } };
-
-  const finalQuery =
-    Object.keys(filterQuery).length > 0
-      ? { $and: [baseQuery, filterQuery] }
-      : baseQuery;
-
-  const totalItems = await Job.countDocuments(finalQuery);
-
-  const skip = (page - 1) * limit;
-  const paginatedRecommendations = recommendations.slice(skip, skip + limit);
-
-  const jobDocs = await Job.find({
-    _id: {
-      $in: paginatedRecommendations.map(
-        (r) => new mongoose.Types.ObjectId(r.job_id)
-      ),
-    },
-  })
+  const jobDocs = await Job.find({ _id: { $in: paginatedJobIds } })
     .populate({
       path: "categories",
       model: "JobCategories",
@@ -282,12 +287,9 @@ const getJobsWithRecommendation = async (
   const jobMap = new Map(jobDocs.map((job) => [job._id.toString(), job]));
 
   const companyIds = jobDocs.map((job) => job.companyId?._id).filter(Boolean);
-  const companies = await Company.find({
-    _id: { $in: companyIds },
-  })
+  const companies = await Company.find({ _id: { $in: companyIds } })
     .select("name")
     .populate("industryId", "name");
-
   const companyMap = new Map(companies.map((c) => [c._id.toString(), c]));
 
   const scoreMap = new Map(
