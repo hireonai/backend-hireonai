@@ -287,11 +287,6 @@ module.exports = [
         allow: "multipart/form-data",
         multipart: true,
       },
-      plugins: {
-        "hapi-swagger": {
-          payloadType: "form",
-        },
-      },
       validate: {
         headers: Joi.object({
           authorization: Joi.string()
@@ -307,6 +302,7 @@ module.exports = [
       },
       plugins: {
         "hapi-swagger": {
+          payloadType: "form",
           responses: {
             200: {
               description: "Profile photo uploaded successfully",
@@ -342,11 +338,6 @@ module.exports = [
         allow: "multipart/form-data",
         multipart: true,
       },
-      plugins: {
-        "hapi-swagger": {
-          payloadType: "form",
-        },
-      },
       validate: {
         headers: Joi.object({
           authorization: Joi.string()
@@ -362,6 +353,7 @@ module.exports = [
       },
       plugins: {
         "hapi-swagger": {
+          payloadType: "form",
           responses: {
             200: {
               description: "CV uploaded successfully",

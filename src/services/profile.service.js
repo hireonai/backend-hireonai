@@ -34,6 +34,9 @@ const getUserProfile = async (user) => {
           params: {
             user_id: user._id,
           },
+          headers: {
+            "X-API-Key": env.mlServiceApiKey,
+          },
         }
       );
 
@@ -286,6 +289,11 @@ const updateProfileCV = async (user, cv) => {
       {
         cv_storage_url: cvUrl,
         user_id: user._id,
+      },
+      {
+        headers: {
+          "X-API-Key": env.mlServiceApiKey,
+        },
       }
     );
 

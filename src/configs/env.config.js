@@ -6,6 +6,7 @@ module.exports = {
   nodeEnv: process.env.NODE_ENV,
   frontendUrl: process.env.FRONTEND_URL,
   mlServiceUrl: process.env.ML_SERVICE_URL,
+  mlServiceApiKey: process.env.ML_SERVICE_API_KEY,
   mongodbUri: process.env.MONGODB_URI,
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN,

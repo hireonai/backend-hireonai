@@ -241,6 +241,9 @@ const getJobsWithRecommendation = async (
       params: {
         user_id: userId,
       },
+      headers: {
+        "X-API-Key": env.mlServiceApiKey,
+      },
     }
   );
 
@@ -489,6 +492,11 @@ const analyzeUserCV = async (user, jobId) => {
           job_qualification_list: job.jobQualificationsList,
           min_experience: job.minExperienceId.name,
         },
+      },
+      {
+        headers: {
+          "X-API-Key": env.mlServiceApiKey,
+        },
       }
     );
 
@@ -559,6 +567,11 @@ const coverLetterUser = async (user, jobId, specificRequest) => {
           working_location: job.workingLocation,
         },
         spesific_request: specificRequest,
+      },
+      {
+        headers: {
+          "X-API-Key": env.mlServiceApiKey,
+        },
       }
     );
 
