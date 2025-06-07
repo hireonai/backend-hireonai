@@ -78,7 +78,12 @@ const init = async () => {
     password: env.cookiePassword,
     clientId: env.googleClientId,
     clientSecret: env.googleClientSecret,
-    isSecure: false,
+    isSecure: env.nodeEnv === "production",
+    scope: ["profile", "email"],
+    location:
+      env.nodeEnv === "production"
+        ? "https://hireonai-backend-1041613229637.asia-southeast2.run.app"
+        : "http://localhost:5000",
     scope: ["profile", "email"],
   });
 
