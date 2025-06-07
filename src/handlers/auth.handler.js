@@ -222,19 +222,24 @@ const activate = async (request, h) => {
     delete user.oauthProvider;
     delete user.role;
 
-    // const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "success",
+      encodeURIComponent(
+        "Account verified successfully. Please login with your credentials."
+      )
+    );
+    return h.redirect(redirectUrl.toString());
 
-    // return h.redirect(redirectUrl.toString());
-
-    return ResponseAPI.success(h, user, "Account verified successfully.");
+    // return ResponseAPI.success(h, user, "Account verified successfully.");
   } catch (err) {
-    // const redirectUrl = new URL(`${env.frontendUrl}/login`);
-    // redirectUrl.searchParams.set(
-    //   "error",
-    //   encodeURIComponent(err.message || "Activation error")
-    // );
-    // return h.redirect(redirectUrl.toString());
-    return ResponseAPI.error(h, err.message, err.statusCode || 500);
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "error",
+      encodeURIComponent(err.message || "Activation error")
+    );
+    return h.redirect(redirectUrl.toString());
+    // return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 

@@ -93,7 +93,9 @@ const findOrCreateUserOAuth = async ({
 };
 
 const sendingActivationEmail = async ({ email, token }) => {
-  const activationLink = `${env.frontendUrl}/activate/${token}`;
+  const activationLink = `${
+    env.nodeEnv === "production" ? env.baseUrl : `http://localhost:${env.port}`
+  }/auth/activate/${token}`;
   const emailContent = `
     <h1>Welcome to ${env.appName}!</h1>
     <p>We're excited to have you on board. To start using your account, please verify your email address by clicking the link below:</p>

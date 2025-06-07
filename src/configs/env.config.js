@@ -4,6 +4,7 @@ module.exports = {
   appName: process.env.APP_NAME,
   port: process.env.PORT,
   nodeEnv: process.env.NODE_ENV,
+  baseUrl: process.env.BASE_URL,
   frontendUrl: process.env.FRONTEND_URL,
   mlServiceUrl: process.env.ML_SERVICE_URL,
   mlServiceApiKey: process.env.ML_SERVICE_API_KEY,
