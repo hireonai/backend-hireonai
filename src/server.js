@@ -82,8 +82,8 @@ const init = async () => {
     scope: ["profile", "email"],
     location:
       env.nodeEnv === "production"
-        ? "https://hireonai-backend-1041613229637.asia-southeast2.run.app"
-        : "http://localhost:5000",
+        ? env.baseUrl
+        : `http://localhost:${env.port}`,
     scope: ["profile", "email"],
   });
 
@@ -92,7 +92,11 @@ const init = async () => {
     password: env.cookiePassword,
     clientId: env.linkedinClientId,
     clientSecret: env.linkedinClientSecret,
-    isSecure: false,
+    isSecure: env.nodeEnv === "production",
+    location:
+      env.nodeEnv === "production"
+        ? env.baseUrl
+        : `http://localhost:${env.port}`,
   });
 
   server.auth.strategy("facebook", "bell", {
@@ -100,7 +104,11 @@ const init = async () => {
     password: env.cookiePassword,
     clientId: env.facebookClientId,
     clientSecret: env.facebookClientSecret,
-    isSecure: false,
+    isSecure: env.nodeEnv === "production",
+    location:
+      env.nodeEnv === "production"
+        ? env.baseUrl
+        : `http://localhost:${env.port}`,
     scope: ["email", "public_profile"],
   });
 
