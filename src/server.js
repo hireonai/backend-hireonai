@@ -54,6 +54,13 @@ const init = async () => {
     },
   });
 
+  server.ext("onRequest", (request, h) => {
+    if (env.nodeEnv === "production") {
+      request.headers["x-forwarded-proto"] = "https";
+    }
+    return h.continue;
+  });
+
   await server.register([Bell, Cookie]);
   await registerSwagger(server);
 
