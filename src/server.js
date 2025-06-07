@@ -61,7 +61,7 @@ const init = async () => {
     cookie: {
       name: "auth-session",
       password: env.cookiePassword,
-      isSecure: false,
+      isSecure: env.nodeEnv === "production",
     },
     redirectTo: "/auth/google",
   });
@@ -71,7 +71,7 @@ const init = async () => {
     password: env.cookiePassword,
     clientId: env.googleClientId,
     clientSecret: env.googleClientSecret,
-    isSecure: false,
+    isSecure: env.nodeEnv === "production",
     scope: ["profile", "email"],
   });
 
@@ -80,7 +80,7 @@ const init = async () => {
     password: env.cookiePassword,
     clientId: env.linkedinClientId,
     clientSecret: env.linkedinClientSecret,
-    isSecure: false,
+    isSecure: env.nodeEnv === "production",
   });
 
   server.auth.strategy("facebook", "bell", {
@@ -88,7 +88,7 @@ const init = async () => {
     password: env.cookiePassword,
     clientId: env.facebookClientId,
     clientSecret: env.facebookClientSecret,
-    isSecure: false,
+    isSecure: env.nodeEnv === "production",
     scope: ["email", "public_profile"],
   });
 
