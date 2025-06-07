@@ -13,12 +13,12 @@ const { generateToken } = require("../utils/token.util");
 
 const googleOauth = async (request, h) => {
   if (!request.auth.isAuthenticated) {
-    // return h.redirect(
-    //   `${env.frontendUrl}/login?error=${encodeURIComponent(
-    //     "Failed to authenticate with Google"
-    //   )}`
-    // );
-    return ResponseAPI.error(h, "Failed to authenticate with Google", 401);
+    return h.redirect(
+      `${env.frontendUrl}/login?error=${encodeURIComponent(
+        "Failed to authenticate with Google"
+      )}`
+    );
+    // return ResponseAPI.error(h, "Failed to authenticate with Google", 401);
   }
 
   const profile = request.auth.credentials.profile;
@@ -36,37 +36,37 @@ const googleOauth = async (request, h) => {
 
     const token = generateToken(account);
 
-    // const redirectUrl = new URL(`${env.frontendUrl}/oauth/callback`);
-    // redirectUrl.searchParams.set("token", token);
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set("token", token);
 
-    // return h.redirect(redirectUrl.toString());
+    return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.success(
-      h,
-      {
-        token,
-        user: {
-          id: account._id,
-          email: account.email,
-          fullname: profile.displayName,
-          photoUrl:
-            profile.raw.picture !== null && profile.raw.picture !== undefined
-              ? profile.raw.picture
-              : null,
-        },
-      },
-      "Login success with Google"
-    );
-  } catch (err) {
-    // const redirectUrl = new URL(`${env.frontendUrl}/login`);
-    // redirectUrl.searchParams.set(
-    //   "error",
-    //   encodeURIComponent(err.message || "Login error with Google")
+    // return ResponseAPI.success(
+    //   h,
+    //   {
+    //     token,
+    //     user: {
+    //       id: account._id,
+    //       email: account.email,
+    //       fullname: profile.displayName,
+    //       photoUrl:
+    //         profile.raw.picture !== null && profile.raw.picture !== undefined
+    //           ? profile.raw.picture
+    //           : null,
+    //     },
+    //   },
+    //   "Login success with Google"
     // );
+  } catch (err) {
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "error",
+      encodeURIComponent(err.message || "Login error with Google")
+    );
 
-    // return h.redirect(redirectUrl.toString());
+    return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(h, err.message, err.statusCode || 500);
+    // return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
