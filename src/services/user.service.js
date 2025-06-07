@@ -71,8 +71,6 @@ const findOrCreateUserOAuth = async ({
 
       await session.commitTransaction();
       session.endSession();
-
-      return user;
     } else {
       if (user.oauthProvider !== oauthProvider) {
         throw new CustomError(
@@ -83,6 +81,7 @@ const findOrCreateUserOAuth = async ({
         );
       }
     }
+    return user;
   } catch (error) {
     await session.abortTransaction();
     session.endSession();

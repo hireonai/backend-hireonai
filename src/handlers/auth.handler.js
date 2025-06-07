@@ -10,6 +10,7 @@ const {
 } = require("../services/user.service");
 const ResponseAPI = require("../utils/response.util");
 const { generateToken } = require("../utils/token.util");
+const env = require("../configs/env.config");
 
 const googleOauth = async (request, h) => {
   if (!request.auth.isAuthenticated) {
@@ -72,12 +73,12 @@ const googleOauth = async (request, h) => {
 
 const linkedinOauth = async (request, h) => {
   if (!request.auth.isAuthenticated) {
-    // return h.redirect(
-    //   `${env.frontendUrl}/login?error=${encodeURIComponent(
-    //     "Failed to authenticate with LinkedIn"
-    //   )}`
-    // );
-    return ResponseAPI.error(h, "Failed to authenticate with LinkedIn", 401);
+    return h.redirect(
+      `${env.frontendUrl}/login?error=${encodeURIComponent(
+        "Failed to authenticate with LinkedIn"
+      )}`
+    );
+    // return ResponseAPI.error(h, "Failed to authenticate with LinkedIn", 401);
   }
 
   const profile = request.auth.credentials.profile;
@@ -92,44 +93,44 @@ const linkedinOauth = async (request, h) => {
 
     const token = generateToken(account);
 
-    // const redirectUrl = new URL(`${env.frontendUrl}/oauth/callback`);
-    // redirectUrl.searchParams.set("token", token);
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set("token", token);
 
-    // return h.redirect(redirectUrl.toString());
+    return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.success(
-      h,
-      {
-        token,
-        user: {
-          id: account._id,
-          email: account.email,
-          fullname: profile.displayName,
-          photoUrl: profile.photo || null,
-        },
-      },
-      "Login success with LinkedIn"
-    );
-  } catch (err) {
-    // const redirectUrl = new URL(`${env.frontendUrl}/login`);
-    // redirectUrl.searchParams.set(
-    //   "error",
-    //   encodeURIComponent(err.message || "Login error with LinkedIn")
+    // return ResponseAPI.success(
+    //   h,
+    //   {
+    //     token,
+    //     user: {
+    //       id: account._id,
+    //       email: account.email,
+    //       fullname: profile.displayName,
+    //       photoUrl: profile.photo || null,
+    //     },
+    //   },
+    //   "Login success with LinkedIn"
     // );
+  } catch (err) {
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "error",
+      encodeURIComponent(err.message || "Login error with LinkedIn")
+    );
 
-    // return h.redirect(redirectUrl.toString());
+    return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(h, err.message, err.statusCode || 500);
+    // return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 const facebookOauth = async (request, h) => {
   if (!request.auth.isAuthenticated) {
-    // return h.redirect(
-    //   `${env.frontendUrl}/login?error=${encodeURIComponent(
-    //     "Failed to authenticate with Facebook"
-    //   )}`
-    // );
-    return ResponseAPI.error(h, "Failed to authenticate with Facebook", 401);
+    return h.redirect(
+      `${env.frontendUrl}/login?error=${encodeURIComponent(
+        "Failed to authenticate with Facebook"
+      )}`
+    );
+    // return ResponseAPI.error(h, "Failed to authenticate with Facebook", 401);
   }
 
   const profile = request.auth.credentials.profile;
@@ -147,36 +148,36 @@ const facebookOauth = async (request, h) => {
 
     const token = generateToken(account);
 
-    // const redirectUrl = new URL(`${env.frontendUrl}/oauth/callback`);
-    // redirectUrl.searchParams.set("token", token);
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set("token", token);
 
-    // return h.redirect(redirectUrl.toString());
+    return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.success(
-      h,
-      {
-        token,
-        user: {
-          id: account._id,
-          email: account.email,
-          fullname: profile.displayName,
-          photoUrl:
-            profile.picture !== null && profile.picture !== undefined
-              ? profile.picture.data.url
-              : null,
-        },
-      },
-      "Login success with Facebook"
-    );
-  } catch (err) {
-    // const redirectUrl = new URL(`${env.frontendUrl}/login`);
-    // redirectUrl.searchParams.set(
-    //   "error",
-    //   encodeURIComponent(err.message || "Login error with Facebook")
+    // return ResponseAPI.success(
+    //   h,
+    //   {
+    //     token,
+    //     user: {
+    //       id: account._id,
+    //       email: account.email,
+    //       fullname: profile.displayName,
+    //       photoUrl:
+    //         profile.picture !== null && profile.picture !== undefined
+    //           ? profile.picture.data.url
+    //           : null,
+    //     },
+    //   },
+    //   "Login success with Facebook"
     // );
-    // return h.redirect(redirectUrl.toString());
+  } catch (err) {
+    const redirectUrl = new URL(`${env.frontendUrl}/login`);
+    redirectUrl.searchParams.set(
+      "error",
+      encodeURIComponent(err.message || "Login error with Facebook")
+    );
+    return h.redirect(redirectUrl.toString());
 
-    return ResponseAPI.error(h, err.message, err.statusCode || 500);
+    // return ResponseAPI.error(h, err.message, err.statusCode || 500);
   }
 };
 
