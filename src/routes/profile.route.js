@@ -286,6 +286,7 @@ module.exports = [
         parse: true,
         allow: "multipart/form-data",
         multipart: true,
+        maxBytes: 5 * 1024 * 1024,
       },
       validate: {
         headers: Joi.object({
@@ -312,7 +313,7 @@ module.exports = [
                   success: true,
                   message: "Profile photo successfully uploaded.",
                   data: {
-                    photoUrl: ["{{photoUrl}}"],
+                    photoUrl: "{{photoUrl}}",
                   },
                 },
               },
@@ -337,6 +338,7 @@ module.exports = [
         parse: true,
         allow: "multipart/form-data",
         multipart: true,
+        maxBytes: 5 * 1024 * 1024,
       },
       validate: {
         headers: Joi.object({
@@ -363,7 +365,7 @@ module.exports = [
                   success: true,
                   message: "CV successfully uploaded.",
                   data: {
-                    cvUrl: ["{{cvUrl}}"],
+                    cvUrl: "{{cvUrl}}",
                   },
                 },
               },
