@@ -1,7 +1,6 @@
 const {
   getJobMinExperiences,
 } = require("../handlers/jobMinExperience.handler");
-const Joi = require("joi");
 
 module.exports = [
   {

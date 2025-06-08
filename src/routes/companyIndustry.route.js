@@ -1,6 +1,4 @@
 const { getCompanyIndustries } = require("../handlers/companyIndustry.handler");
-const Joi = require("joi");
-const { plugin } = require("mongoose");
 
 module.exports = [
   {

@@ -1,5 +1,4 @@
 const { getJobCategories } = require("../handlers/jobCategory.handler");
-const Joi = require("joi");
 
 module.exports = [
   {
