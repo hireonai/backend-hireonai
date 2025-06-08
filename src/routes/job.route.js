@@ -168,6 +168,13 @@ module.exports = [
                     company: {
                       _id: "{{companyId}}",
                       name: "{{companyName}}",
+                      profileSrc: "{{companyProfileSrc}}",
+                      description: "{{companyDescription}}",
+                      profileSrc: "{{companyProfileSrc}}",
+                      location: "{{companyLocation}}",
+                      employeesCount: "{{companyEmployeesCount}}",
+                      createdAt: "{{companyCreatedAt}}",
+                      updatedAt: "{{companyUpdatedAt}}",
                       industry: {
                         _id: "{{industryId}}",
                         name: "{{industryName}}",
