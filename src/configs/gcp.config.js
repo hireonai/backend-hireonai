@@ -2,7 +2,10 @@ const { Storage } = require("@google-cloud/storage");
 const path = require("path");
 const env = require("../configs/env.config");
 
-const serviceKeyPath = path.join(__dirname, env.gcpPathSecret);
+// Handle both absolute and relative paths for GCP service account key
+const serviceKeyPath = path.isAbsolute(env.gcpPathSecret) 
+  ? env.gcpPathSecret 
+  : path.join(__dirname, env.gcpPathSecret);
 
 const storage = new Storage({
   keyFilename: serviceKeyPath,
