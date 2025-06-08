@@ -1,4 +1,3 @@
-const authMiddleware = require("../middlewares/authentication.middleware");
 const { getJobCategories } = require("../handlers/jobCategory.handler");
 const Joi = require("joi");
 
@@ -7,18 +6,10 @@ module.exports = [
     method: "GET",
     path: "/job-categories",
     options: {
-      pre: [{ method: authMiddleware }],
       handler: getJobCategories,
       tags: ["api", "job categories"],
       description: "Get all job categories",
       notes: "This endpoint retrieves all available job categories.",
-      validate: {
-        headers: Joi.object({
-          authorization: Joi.string()
-            .required()
-            .description("e.g., 'Bearer your_token'"),
-        }).unknown(),
-      },
       plugins: {
         "hapi-swagger": {
           responses: {
