@@ -26,10 +26,8 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/src ./src
 
-# Ensure keys directory exists and copy keys if they exist
+# Ensure keys directory exists
 RUN mkdir -p src/keys
-# Copy keys from builder stage if they exist (created by GitHub Actions)
-COPY --from=builder /app/src/keys ./src/keys
 
 # Expose the port the app runs on
 EXPOSE 8080
