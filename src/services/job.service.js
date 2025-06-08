@@ -508,7 +508,7 @@ const analyzeUserCV = async (user, jobId) => {
       { userId: user._id, jobId },
       {
         cvRelevanceScore: analysisResult.cv_relevance_score,
-        explanation: analysisResult.explaination,
+        explanation: analysisResult.analysis_explanation,
         skilIdentificationDict: analysisResult.skill_identification_dict,
         suggestions: analysisResult.suggestions,
         improvements: analysisResult.areas_for_improvement,

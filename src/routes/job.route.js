@@ -191,6 +191,7 @@ module.exports = [
                       skilIdentificationDict: {
                         "{{skillName}}": "{{skillValue}}",
                       },
+                      explanation: "{{explanation}}",
                       suggestions: ["{{suggestion}}."],
                     },
                   },
@@ -239,6 +240,7 @@ module.exports = [
                     skilIdentificationDict: {
                       "{{skillName}}": "{{skillValue}}",
                     },
+                    explanation: "{{explanation}}",
                     suggestions: ["{{suggestion}}"],
                   },
                 },
