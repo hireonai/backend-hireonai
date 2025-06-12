@@ -1,6 +1,6 @@
-# Backend HireonAI
+# Backend HireOn.AI
 
-This is the backend service for the **HireonAI** platform. It is built using [Hapi.js](https://hapi.dev/) as the main framework and integrates MongoDB using Mongoose, [Machine Learning service](https://github.com/hireonai/fix-ml-services.git) for job recommendation, CV analysis and cover letter generation. The application supports JWT-based authentication, email notifications, Google Cloud Storage for file management, and includes auto-generated API documentation using Swagger.
+This is the backend service for the **HireonAI** platform. It is built using [Hapi.js](https://hapi.dev/) as the main framework and integrates MongoDB using Mongoose, [Machine Learning Service](https://github.com/hireonai/ml-services) for job recommendation, CV analysis and cover letter generation. The application supports JWT-based authentication, email notifications, Google Cloud Storage for file management, and includes auto-generated API documentation using Swagger.
 
 ---
 
@@ -50,6 +50,14 @@ npm install
 
 ---
 
+## 📸 Architecture
+
+Below is the architecture diagram for the HireonAI backend:
+
+![Architecture Diagram](docs/hireonai-architecture.png)
+
+---
+
 ## 🧪 Available Scripts
 
 ```bash
@@ -71,6 +79,37 @@ Copy the `.env.example` file to `.env` and modify it according to your needs.
 
 ---
 
+## 🔑 Google Cloud Storage Service Account
+
+To use Google Cloud Storage, you need to create a service account key file.  
+Follow these steps:
+
+1. Create a service account key file for Google Cloud Storage:
+
+   ```
+   src/keys/gcs-service-account.json
+   ```
+
+2. Fill in the file with the following format and complete it with data from the Google Cloud Console:
+
+   ```json
+   {
+     "type": "{{ your-service-account-type }}",
+     "project_id": "{{ your-project-id }}",
+     "private_key_id": "{{ your-private-key-id }}",
+     "private_key": "{{ your-private-key }}",
+     "client_email": "{{ your-client-email }}",
+     "client_id": "{{ your-client-id }}",
+     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+     "token_uri": "https://oauth2.googleapis.com/token",
+     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+     "client_x509_cert_url": "{{ your-client-x509-cert-url }}",
+     "universe_domain": "googleapis.com"
+   }
+   ```
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -79,10 +118,13 @@ src/
 ├── constants/     # Global constants
 ├── data/          # Seed data
 ├── handlers/      # API request handlers
-├── controllers/   # Business logic
+├── keys/          # Service account keys
+├── middlewares/   # Custom middleware
+├── controllers/   # API controllers
 ├── models/        # Mongoose schemas
 ├── routes/        # API route definitions
 ├── seeders/       # Data seeding scripts
+├── services/      # Business logic
 ├── utils/         # Helpers (email, storage, etc)
 └── server.js      # Main server entry point
 ```
@@ -94,7 +136,7 @@ src/
 Once the server is running, navigate to:
 
 ```
-http://localhost:3000/documentation
+http://localhost:5000/docs
 ```
 
 You’ll see interactive API documentation generated using Swagger (`hapi-swagger`).
