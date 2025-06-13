@@ -7,6 +7,7 @@ const {
   deleteBookmarkJobs,
   uploadProfilePhoto,
   uploadProfileCV,
+  deleteProfileCV,
 } = require("../handlers/profile.handler");
 const Joi = require("joi");
 const { plugin } = require("mongoose");
@@ -372,6 +373,24 @@ module.exports = [
             },
           },
         },
+      },
+    },
+  },
+  {
+    method: "DELETE",
+    path: "/profile/cv",
+    options: {
+      pre: [{ method: authMiddleware }],
+      tags: ["api", "profile"],
+      description: "Delete CV",
+      notes: "This endpoint deletes CV from the user's profile.",
+      handler: deleteProfileCV,
+      validate: {
+        headers: Joi.object({
+          authorization: Joi.string()
+            .required()
+            .description("e.g., 'Bearer your_token'"),
+        }).unknown(),
       },
     },
   },

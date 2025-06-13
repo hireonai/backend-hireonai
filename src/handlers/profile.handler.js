@@ -5,6 +5,7 @@ const {
   getUserProfile,
   updateUserProfile,
   updateProfileCV,
+  deleteUserProfileCV,
   updateProfilePhoto,
   updateUserTagPreferences,
   addUserBookmarkJobs,
@@ -105,6 +106,18 @@ const uploadProfileCV = async (request, h) => {
   }
 };
 
+const deleteProfileCV = async (request, h) => {
+  const user = request.auth.credentials;
+
+  try {
+    await deleteUserProfileCV(user);
+
+    return ResponseAPI.success(h, null, "CV successfully deleted.");
+  } catch (err) {
+    return ResponseAPI.error(h, err.message, err.statusCode || 500);
+  }
+};
+
 const uploadProfilePhoto = async (request, h) => {
   const user = request.auth.credentials;
   const photo = request.payload.photo;
@@ -128,5 +141,6 @@ module.exports = {
   addBookmarkJobs,
   deleteBookmarkJobs,
   uploadProfileCV,
+  deleteProfileCV,
   uploadProfilePhoto,
 };

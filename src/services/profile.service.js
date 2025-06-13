@@ -310,6 +310,35 @@ const updateProfileCV = async (user, cv) => {
   }
 };
 
+const deleteUserProfileCV = async (user) => {
+  try {
+    const profile = await Profile.findOne({ userId: user._id });
+
+    if (!profile) {
+      throw new CustomError("Profile not found.", 404);
+    }
+
+    if (!profile.cvUrl) {
+      throw new CustomError("CV not found.", 404);
+    }
+
+    if (profile.cvUrl) {
+      await deleteFromGCS(profile.cvUrl);
+    }
+
+    profile.cvUrl = null;
+
+    await profile.save();
+
+    return profile;
+  } catch (err) {
+    if (err instanceof CustomError) {
+      throw err;
+    }
+    throw new CustomError(err.message, 500);
+  }
+};
+
 module.exports = {
   getUserProfile,
   updateUserProfile,
@@ -318,4 +347,5 @@ module.exports = {
   deleteUserBookmarkJobs,
   updateProfilePhoto,
   updateProfileCV,
+  deleteUserProfileCV,
 };
